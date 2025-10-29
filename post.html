@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章 - 博客</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+
+  <!-- 使用 marked 渲染 Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+
+  <!-- 先 Prism 核心 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+  <!-- 再按依赖顺序加载组件：clike -> c -> cpp -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <a href="index.html" class="brand"><i class="fa fa-arrow-left"></i> 返回首页</a>
+      <a href="admin.html" class="home-link"><i class="fa fa-cog"></i> 管理</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <article class="editor-card" id="postCard">
+        <header class="editor-header">
+          <h1 id="postTitle">加载中…</h1>
+          <div id="postMeta" style="margin-top:8px; color:var(--muted); font-size:14px;"></div>
+        </header>
+        <div class="editor-body">
+          <div id="postContent" class="post-preview-side">
+            <p class="text-muted">正在加载文章内容…</p>
+          </div>
+          <div id="postActions" style="margin-top:16px;"></div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <script type="module" src="post.js"></script>
+</body>
+</html>

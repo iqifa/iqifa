@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>编辑文章 - 博客管理</title>
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="firebase.js"></script>
+
+
+
+
+
+  <style>
+    /* 封面上传样式（局部） */
+    .thumb-uploader{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .thumb-preview{width:180px;height:101px;object-fit:cover;border-radius:8px;border:1px solid rgba(15,23,42,.08);background:#f3f4f6}
+    .progress{width:180px;height:6px;background:#eef2ff;border-radius:999px;overflow:hidden;display:none}
+    .progress .bar{height:100%;width:0%;;background:linear-gradient(90deg,var(--primary),var(--primary-600))}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="container">
+    <a href="admin.html" class="brand">
+      <i class="fa fa-arrow-left"></i> 返回管理页
+    </a>
+    <a href="index.html" class="home-link">
+      <i class="fa fa-home"></i> 博客首页
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="editor-card">
+      <div class="editor-header">
+        <h1>编辑文章</h1>
+      </div>
+      <div class="editor-body">
+        <div class="form-group">
+          <label for="titleInput">文章标题</label>
+          <input type="text" id="titleInput" placeholder="请输入文章标题">
+        </div>
+
+        <!-- 新增：文章封面上传 -->
+<div class="form-group">
+  <label for="thumbnailUpload">文章缩略图</label>
+  <input type="file" id="thumbnailUpload" accept="image/*">
+  <div id="thumbnailPreview" style="margin-top: 10px; max-width: 300px;"></div>
+  <p class="text-sm text-gray-500 mt-1">支持JPG、PNG格式，建议尺寸400x240（大小不超过2MB）</p>
+</div>
+        <!-- 新增结束 -->
+
+        <div class="metadata-hint">
+          提示：可在文章内容开头使用以下格式设置元数据（将在管理界面显示）<br>
+          ---<br>
+          date: 2025-10-27 20:43:20<br>
+          categories: [前端/JavaScript, 框架/Vue, 工具/Webpack]<br>
+          tags: [ES6, 组件化, 性能优化]<br>
+          ---
+        </div>
+
+        <div class="editor-container">
+<div class="editor-txt">
+    <div id="markdownEditor"></div>
+    <input type="file" id="imageUploader" accept="image/*" class="hidden">
+</div>
+</div>
+
+        <div class="btn-group">
+          <button id="saveBtn" class="btn btn-primary">
+            <i class="fa fa-save"></i> 保存文章
+          </button>
+        </div>
+
+        <!-- 状态提示 -->
+        <div id="statusMessage" class="status-message"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/marked@4.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> -->
+<script type="module" src="admin-editor.js"></script>
+</body>
+</html>

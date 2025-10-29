@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>博客管理 - 登录</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="firebase.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f0f2f5;
+      padding: 2rem;
+    }
+
+    /* 主按钮样式 */
+    .login-trigger {
+      display: block;
+      margin: 2rem auto;
+      padding: 0.8rem 2rem;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .login-trigger:hover {
+      background-color: #2980b9;
+    }
+
+    /* 弹窗背景 */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    /* 弹窗内容 */
+    .login-modal {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* 关闭按钮 */
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+    }
+
+    /* 表单样式 */
+    .modal-header {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .modal-header h2 {
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #444;
+    }
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    input:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+    }
+    .btn {
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 6px;
+      background-color: #3498db;
+      color: white;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    /* 状态提示 */
+    .status-message {
+      margin-top: 1rem;
+      padding: 0.8rem;
+      border-radius: 6px;
+      text-align: center;
+      display: none;
+    }
+    .status-error {
+      background-color: #fdedeb;
+      color: #e74c3c;
+      display: block;
+    }
+    .status-success {
+      background-color: #eafaf1;
+      color: #27ae60;
+      display: block;
+    }
+
+    /* 显示弹窗 */
+    .modal-backdrop.active {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+  <div class="container">
+    <a href="index.html" class="home-link">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 9L12 2L21 9V20C21 20.55 20.55 21 20 21H4C3.45 21 3 20.55 3 20V9Z" stroke="currentColor" stroke-width="2"/>
+        <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      返回主页
+    </a>
+  </div>
+</header>
+  <!-- 登录触发按钮 -->
+  <button class="login-trigger" id="showLoginBtn">登录管理后台</button>
+
+  <!-- 登录弹窗 -->
+  <div class="modal-backdrop" id="loginModal">
+    <div class="login-modal">
+      <button class="close-modal" id="closeLoginBtn">&times;</button>
+      <div class="modal-header">
+        <h2>邮箱登录</h2>
+        <p>请使用管理员账号登录</p>
+      </div>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">邮箱</label>
+          <input type="email" id="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input type="password" id="password" placeholder="请输入密码" required>
+        </div>
+        <button type="submit" class="btn">登录</button>
+        <div id="loginStatus" class="status-message"></div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="auth.js"></script>
+</body>
+</html>

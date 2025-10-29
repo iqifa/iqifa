@@ -1,0 +1,11 @@
+{
+  "name": "alaala",
+  "title": "某四非研究生废物",
+  "introduction": "摆！摆兵就该摆！",
+  "contacts": [
+    { "type": "github", "url": "https://github.com", "icon": "fa-github" },
+    { "type": "twitter", "url": "https://twitter.com", "icon": "fa-twitter" },
+    { "type": "linkedin", "url": "https://linkedin.com", "icon": "fa-linkedin" },
+    { "type": "email", "url": "mailto:example@mail.com", "icon": "fa-envelope" }
+  ]
+}

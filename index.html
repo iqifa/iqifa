@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>派的博客</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script>
+    // 配置Tailwind自定义颜色
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3B82F6',
+            secondary: '#64748B',
+            light: '#F8FAFC',
+            dark: '#1E293B'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-balance {
+        text-wrap: balance;
+      }
+      .category-item {
+        @apply py-1.5 px-3 rounded-lg hover:bg-primary/10 transition-colors cursor-pointer flex justify-between items-center;
+      }
+      .category-item.active {
+        @apply bg-primary/10 text-primary font-medium;
+      }
+      .category-parent {
+        @apply font-medium text-dark;
+      }
+      .category-child {
+        @apply pl-4 text-secondary;
+      }
+      .blog-card {
+        @apply bg-white rounded rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden mb-6;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+  <!-- 顶部导航 -->
+  <header class="sticky top-0 z-50 bg-white shadow-sm">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="#" class="text-2xl font-bold text-primary flex items-center gap-2">
+        <i class="fa fa-code"></i>
+        <span>派的博客</span>
+      </a>
+      <div class="hidden md:flex items-center gap-6">
+        <a href="#" class="hover:text-primary transition-colors">首页</a>
+        <a href="#" class="hover:text-primary transition-colors">归档</a>
+        <a href="#" class="hover:text-primary transition-colors">关于</a>
+        <!-- 登录/管理按钮 -->
+        <a href="login.html" id="authButton"
+          class="btn btn-primary px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+          登录
+        </a>
+      </div>
+      <div class="md:hidden text-xl flex items-center">
+        <button id="mobileMenuBtn">
+          <i class="fa fa-bars"></i>
+        </button>
+        <a href="login.html" id="mobileAuthButton" class="ml-4">
+          <i class="fa fa-user"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- 左侧：个人简介 -->
+      <aside class="lg:col-span-3 space-y-6">
+        <!-- 个人信息 -->
+        <div class="bg-white rounded-xl shadow-sm p-6 text-center">
+          <!-- 头像（直接引用本地head.jpg） -->
+          <img id="userAvatar" src="head.jpg" alt="头像"
+            class="w-32 h-32 rounded-full mx-auto object-cover border-4 border-primary/20">
+
+          <!-- 个人信息（由JS动态填充） -->
+          <h2 id="userName" class="text-xl font-bold mt-4">加载中...</h2>
+          <p id="userTitle" class="text-secondary mt-1">加载中...</p>
+          <p id="userIntro" class="mt-4 text-balance text-gray-600">加载中...</p>
+
+          <!-- 联系方式（由JS动态填充） -->
+          <div id="contactsContainer" class="mt-6 flex justify-center gap-4">
+            <!-- 联系方式将通过JS生成 -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- 中间：博客列表 -->
+      <section class="lg:col-span-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-2xl font-bold">最新文章</h2>
+          <div class="text-sm text-secondary">
+            共 <span class="font-medium text-primary" id="totalPosts">0</span> 篇文章
+          </div>
+        </div>
+
+        <!-- 博客过滤状态 -->
+        <div id="filterStatus"
+          class="hidden mb-6 p-3 bg-primary/10 rounded-lg text-primary text-sm flex items-center justify-between">
+          <span>正在查看：<span id="filterText">Python</span></span>
+          <button id="clearFilter" class="hover:underline">清除筛选</button>
+        </div>
+
+        <!-- 博客列表容器 -->
+        <div id="blogList">
+          <!-- 博客列表将通过JavaScript动态生成 -->
+          <div class="text-center py-12 text-gray-500">
+            <i class="fa fa-spinner fa-spin text-2xl mb-4"></i>
+            <p>加载文章中...</p>
+          </div>
+        </div>
+
+        <div class="flex justify-center mt-8">
+          <nav id="pagination" class="inline-flex rounded-md shadow"></nav>
+        </div>
+      </section>
+
+      <!-- 右侧：分类和标签 -->
+      <aside class="lg:col-span-3 space-y-6">
+        <!-- 分类 -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <i class="fa fa-folder-open text-primary"></i>分类
+          </h3>
+          <div class="space-y-1" id="categoriesList">
+            <!-- 分类将通过JavaScript动态生成 -->
+            <div class="text-center py-6 text-gray-500">
+              <i class="fa fa-spinner fa-spin mb-2"></i>
+              <p>加载分类中...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 标签 -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+            <i class="fa fa-tags text-primary"></i>标签
+          </h3>
+          <div class="flex flex-wrap gap-2" id="tagsList">
+            <!-- 标签将通过JavaScript动态生成 -->
+            <div class="text-center py-6 text-gray-500">
+              <i class="fa fa-spinner fa-spin mb-2"></i>
+              <p>加载标签中...</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-dark text-white py-12 mt-16">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0">
+          <h3 class="text-xl font-bold mb-2 flex items-center gap-2">
+            <i class="fa fa-code"></i>派的博客
+          </h3>
+          <p class="text-gray-400">摆！</p>
+        </div>
+        <div class="flex gap-4">
+          <a href="#"
+            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
+            <i class="fa fa-github"></i>
+          </a>
+          <a href="#"
+            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
+            <i class="fa fa-twitter"></i>
+          </a>
+          <a href="#"
+            class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-colors">
+            <i class="fa fa-linkedin"></i>
+          </a>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+        <p>© 2025 派的博客. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import {
+      db,
+      collection,
+      getDocs,
+      auth,
+      onAuthStateChanged
+    } from "./firebase.js";
+
+    // DOM元素
+    const blogList = document.getElementById('blogList');
+    const categoriesList = document.getElementById('categoriesList');
+    const tagsList = document.getElementById('tagsList');
+    const popularPosts = document.getElementById('popularPosts');
+    const totalPosts = document.getElementById('totalPosts');
+    const filterStatus = document.getElementById('filterStatus');
+    const filterText = document.getElementById('filterText');
+    const clearFilter = document.getElementById('clearFilter');
+    const authButton = document.getElementById('authButton');
+    const mobileAuthButton = document.getElementById('mobileAuthButton');
+
+    // 存储所有博客数据
+    let blogData = [];
+    let currentPage = 1;
+    const postsPerPage = 10;
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // 从Firebase加载博客文章（无需登录即可访问）
+        await loadBlogsFromFirebase();
+
+        // 生成并渲染分类
+        const categories = generateCategories(blogData);
+        renderCategories(categories);
+
+        // 生成并渲染标签
+        const tags = generateTags(blogData);
+        renderTags(tags);
+
+
+        // 更新文章总数
+        totalPosts.textContent = blogData.length;
+
+        // 初始化过滤功能
+        initFiltering();
+
+        // 检查登录状态，控制管理入口显示
+        checkLoginStatus();
+
+      } catch (error) {
+        console.error("加载博客失败:", error);
+        blogList.innerHTML = `
+          <div class="text-center py-12 text-gray-500">
+            <i class="fa fa-exclamation-triangle text-2xl mb-4"></i>
+            <p>加载文章失败，请稍后重试</p>
+          </div>
+        `;
+      }
+    });
+
+    // 从Firebase加载博客文章（公开访问，无需登录）
+    async function loadBlogsFromFirebase() {
+      const postsCol = collection(db, "posts");
+      const postsSnap = await getDocs(postsCol);
+
+      // 本地素材库图片文件名列表（可自行增加）
+      const localAssets = [
+        'assets/default1.jpg',
+        'assets/default2.jpg',
+        'assets/default3.jpg',
+        'assets/default4.jpg'
+      ];
+
+      function parseFrontMatter(content) {
+        const metadata = { date: '', categories: [], tags: [] };
+        const lines = content.split('\n');
+        if (lines.length > 0 && lines[0].trim() === '---') {
+          // 找到闭合的 --- 行
+          let end = -1;
+          for (let i = 1; i < lines.length; i++) {
+            if (lines[i].trim() === '---') { end = i; break; }
+          }
+          if (end > 0) {
+            const metaLines = lines.slice(1, end);
+            metaLines.forEach(line => {
+              const idx = line.indexOf(':');
+              if (idx === -1) return;
+              const key = line.slice(0, idx).trim().toLowerCase();
+              const value = line.slice(idx + 1).trim();
+              if (!key) return;
+              if (key === 'date') {
+                metadata.date = value;
+              } else if (key === 'categories') {
+                const m = value.match(/\[([^]*?)\]/);
+                if (m && m[1]) metadata.categories = m[1].split(',').map(s => s.trim()).filter(Boolean);
+              } else if (key === 'tags') {
+                const m = value.match(/\[([^]*?)\]/);
+                if (m && m[1]) metadata.tags = m[1].split(',').map(s => s.trim()).filter(Boolean);
+              }
+            });
+            const body = lines.slice(end + 1).join('\n');
+            return { metadata, body };
+          }
+        }
+        return { metadata: null, body: content };
+      }
+
+      blogData = postsSnap.docs.map(doc => {
+        const data = doc.data();
+
+        // 如果数据库中没有缩略图，则随机选取本地素材库中的一张图片
+        const randomAsset = localAssets[Math.floor(Math.random() * localAssets.length)];
+        const thumbnail = data.thumbnail || randomAsset;
+
+        return {
+          id: doc.id,
+          title: data.title || '无标题',
+          content: data.content || '',
+          summary: data.content ? parseFrontMatter(data.content).body.substring(0, 100).replace(/\#|\*|\_/g, '') : '',
+          image: thumbnail,
+          date: data.metadata?.date || new Date(data.createdAt || Date.now()).toLocaleDateString(),
+          categories: data.metadata?.categories || [],
+          tags: data.metadata?.tags || [],
+          views: data.views || 0
+        };
+      });
+
+      // 按创建时间排序（最新的在前）
+      blogData.sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA;
+      });
+
+      // 渲染博客列表
+      renderBlogList(blogData);
+    }
+    // 检查登录状态：未登录显示登录按钮，登录后显示管理按钮
+    function checkLoginStatus() {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // 用户已登录 - 显示管理入口
+          authButton.href = "admin.html";
+          authButton.textContent = "管理";
+
+          mobileAuthButton.href = "admin.html";
+          mobileAuthButton.innerHTML = '<i class="fa fa-cog"></i>';
+        } else {
+          // 用户未登录 - 显示登录按钮
+          authButton.href = "login.html";
+          authButton.textContent = "登录";
+
+          mobileAuthButton.href = "login.html";
+          mobileAuthButton.innerHTML = '<i class="fa fa-user"></i>';
+        }
+      });
+    }
+
+    // 渲染博客列表（所有用户可见）
+    function renderBlogList(posts, page = 1) {
+      if (posts.length === 0) {
+        blogList.innerHTML = `
+      <div class="text-center py-12 text-gray-500">
+        <i class="fa fa-search text-2xl mb-4"></i>
+        <p>没有找到符合条件的文章</p>
+      </div>
+    `;
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+
+      // 分页计算
+      const totalPages = Math.ceil(posts.length / postsPerPage);
+      const start = (page - 1) * postsPerPage;
+      const end = start + postsPerPage;
+      const paginatedPosts = posts.slice(start, end);
+
+      // 渲染文章
+      blogList.innerHTML = paginatedPosts.map(post => `
+    <article class="blog-card" data-categories="${post.categories.join(',')}" data-tags="${post.tags.join(',')}">
+      <div class="md:flex">
+        <div class="md:w-1/3">
+          <img src="${post.image}" alt="${post.title}" class="w-full h-48 md:h-full object-cover">
+        </div>
+        <div class="p-6 md:w-2/3">
+          <div class="flex items-center gap-3 text-sm text-secondary mb-2">
+            <span><i class="fa fa-folder-o"></i> ${post.categories.join(' / ')}</span>
+            <span><i class="fa fa-calendar-o"></i> ${post.date}</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3 hover:text-primary transition-colors">
+            <a href="post.html?id=${post.id}">${post.title}</a>
+          </h3>
+          <p class="text-gray-600 mb-4 line-clamp-2">${post.summary}...</p>
+          <a href="post.html?id=${post.id}" class="inline-flex items-center text-primary hover:underline">
+            阅读更多 <i class="fa fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      </div>
+    </article>
+  `).join('');
+
+      // 渲染分页导航
+      renderPagination(posts, totalPages, page);
+    }
+
+    // 渲染分页导航
+    function renderPagination(posts, totalPages, currentPage) {
+      const paginationContainer = document.getElementById('pagination');
+      if (!paginationContainer) return;
+
+      if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+      }
+
+      let buttons = `
+    <button class="px-3 py-2 border border-gray-300 rounded-l-md hover:bg-gray-50"
+            ${currentPage === 1 ? 'disabled' : ''}
+            id="prevPage">
+      <i class="fa fa-chevron-left"></i>
+    </button>
+  `;
+
+      for (let i = 1; i <= totalPages; i++) {
+        buttons += `
+      <button class="px-3 py-2 border text-sm ${i === currentPage ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 hover:bg-gray-50'}"
+              data-page="${i}">
+        ${i}
+      </button>
+    `;
+      }
+
+      buttons += `
+    <button class="px-3 py-2 border border-gray-300 rounded-r-md hover:bg-gray-50"
+            ${currentPage === totalPages ? 'disabled' : ''}
+            id="nextPage">
+      <i class="fa fa-chevron-right"></i>
+    </button>
+  `;
+
+      paginationContainer.innerHTML = buttons;
+
+      // 按钮事件
+      paginationContainer.querySelectorAll('button[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentPage = parseInt(btn.dataset.page);
+          renderBlogList(posts, currentPage);
+        });
+      });
+
+      const prev = paginationContainer.querySelector('#prevPage');
+      const next = paginationContainer.querySelector('#nextPage');
+      if (prev) prev.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderBlogList(posts, currentPage);
+        }
+      });
+      if (next) next.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage++;
+          renderBlogList(posts, currentPage);
+        }
+      });
+    }
+
+    // 生成分类结构
+    function generateCategories(posts) {
+      const categoryMap = {};
+
+      posts.forEach(post => {
+        post.categories.forEach(category => {
+          const levels = category.split('/');
+          let currentLevel = categoryMap;
+
+          levels.forEach((level, index) => {
+            const fullPath = levels.slice(0, index + 1).join('/');
+
+            if (!currentLevel[fullPath]) {
+              currentLevel[fullPath] = {
+                name: level,
+                count: 0,
+                children: {}
+              };
+            }
+
+            currentLevel[fullPath].count++;
+            currentLevel = currentLevel[fullPath].children;
+          });
+        });
+      });
+
+      return categoryMap;
+    }
+
+    // 渲染分类列表（修改后）
+    // 渲染分类列表（支持多级嵌套）
+    // 渲染分类列表（支持多级折叠）
+    function renderCategories(categories, container = categoriesList, level = 0) {
+      if (Object.keys(categories).length === 0) {
+        container.innerHTML = '<p class="text-gray-500 py-2">暂无分类</p>';
+        return;
+      }
+
+      // 顶层时清空容器
+      if (level === 0) container.innerHTML = '';
+
+      Object.keys(categories).forEach(categoryPath => {
+        const category = categories[categoryPath];
+
+        // 外层容器
+        const wrapper = document.createElement('div');
+        wrapper.className = `ml-${level * 2}`;
+
+        // 分类项（带折叠箭头）
+        const item = document.createElement('div');
+        item.className = `category-item flex justify-between items-center cursor-pointer ${level > 0 ? 'pl-4 text-secondary' : 'font-medium text-dark'
+          }`;
+        item.setAttribute('data-category', categoryPath);
+        item.innerHTML = `
+      <div class="flex items-center gap-2">
+        ${Object.keys(category.children).length > 0
+            ? `<i class="fa fa-caret-right transition-transform duration-200"></i>`
+            : `<i class="fa fa-circle text-xs text-gray-300"></i>`
+          }
+        <span>${category.name}</span>
+      </div>
+      <span class="bg-gray-100 px-2 py-0.5 rounded text-xs">${category.count}</span>
+    `;
+
+        wrapper.appendChild(item);
+        container.appendChild(wrapper);
+
+        // 子分类容器（初始隐藏）
+        if (Object.keys(category.children).length > 0) {
+          const childContainer = document.createElement('div');
+          childContainer.className = 'ml-4 hidden';
+          wrapper.appendChild(childContainer);
+          renderCategories(category.children, childContainer, level + 1);
+
+          // 折叠功能
+          item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const icon = item.querySelector('i.fa');
+            const isOpen = !childContainer.classList.contains('hidden');
+            childContainer.classList.toggle('hidden');
+            icon.classList.toggle('rotate-90', !isOpen);
+          });
+        }
+
+        // 点击筛选功能
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+          item.classList.add('active');
+
+          const activeFilterValue = categoryPath;
+          filterText.textContent = activeFilterValue;
+          filterStatus.classList.remove('hidden');
+
+          const filteredPosts = blogData.filter(post =>
+            post.categories.some(category => category.includes(activeFilterValue))
+          );
+          renderBlogList(filteredPosts);
+        });
+      });
+    }
+
+
+
+    // 生成标签
+    function generateTags(posts) {
+      const tagMap = {};
+
+      posts.forEach(post => {
+        post.tags.forEach(tag => {
+          tagMap[tag] = (tagMap[tag] || 0) + 1;
+        });
+      });
+
+      return Object.keys(tagMap)
+        .map(tag => ({ name: tag, count: tagMap[tag] }))
+        .sort((a, b) => b.count - a.count);
+    }
+
+    // 渲染标签列表
+    function renderTags(tags) {
+      if (tags.length === 0) {
+        tagsList.innerHTML = '<p class="text-gray-500 py-2">暂无标签</p>';
+        return;
+      }
+
+      tagsList.innerHTML = tags.map(tag => `
+        <span class="category-item px-3 py-1 text-sm" data-tag="${tag.name}">
+          ${tag.name} <span class="bg-gray-100 px-1.5 py-0.5 rounded text-xs">${tag.count}</span>
+        </span>
+      `).join('');
+    }
+
+    // 初始化过滤功能
+    function initFiltering() {
+      let activeFilterType = null;
+      let activeFilterValue = null;
+
+      // 分类过滤
+      document.querySelectorAll('#categoriesList .category-item').forEach(item => {
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+          item.classList.add('active');
+
+          activeFilterType = 'category';
+          activeFilterValue = item.getAttribute('data-category');
+          filterText.textContent = activeFilterValue;
+          filterStatus.classList.remove('hidden');
+
+          filterBlogPosts();
+        });
+      });
+
+      // 标签过滤
+      document.querySelectorAll('#tagsList .category-item').forEach(item => {
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+          item.classList.add('active');
+
+          activeFilterType = 'tag';
+          activeFilterValue = item.getAttribute('data-tag');
+          filterText.textContent = activeFilterValue;
+          filterStatus.classList.remove('hidden');
+
+          filterBlogPosts();
+        });
+      });
+
+      // 清除过滤
+      clearFilter.addEventListener('click', () => {
+        document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+        filterStatus.classList.add('hidden');
+        activeFilterType = null;
+        activeFilterValue = null;
+        renderBlogList(blogData);
+      });
+
+      // 过滤文章
+      function filterBlogPosts() {
+        let filteredPosts = [];
+
+        if (activeFilterType === 'category') {
+          filteredPosts = blogData.filter(post =>
+            post.categories.some(category => category.includes(activeFilterValue))
+          );
+        } else if (activeFilterType === 'tag') {
+          filteredPosts = blogData.filter(post =>
+            post.tags.includes(activeFilterValue)
+          );
+        }
+
+        renderBlogList(filteredPosts);
+      }
+    }
+  </script>
+</body>
+
+</html>
+<script src="load-local-data.js"></script>
