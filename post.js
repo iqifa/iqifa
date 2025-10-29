@@ -29,51 +29,51 @@ async function loadPost(id) {
       return;
     }
 
-      const data = snap.data();
-      const title = data.title || '无标题';
-      const raw = data.content || '';
+    const data = snap.data();
+    const title = data.title || '无标题';
+    const raw = data.content || '';
 
-      // 解析并剥离可能存在的 front-matter（以 --- 包裹的元数据）
-      function parseFrontMatter(content) {
-        const metadata = { date: '', categories: [], tags: [] };
-        const lines = content.split('\n');
-        if (lines.length > 0 && lines[0].trim() === '---') {
-          // 找到闭合的 --- 行
-          let end = -1;
-          for (let i = 1; i < lines.length; i++) {
-            if (lines[i].trim() === '---') { end = i; break; }
-          }
-          if (end > 0) {
-            const metaLines = lines.slice(1, end);
-            metaLines.forEach(line => {
-              const idx = line.indexOf(':');
-              if (idx === -1) return;
-              const key = line.slice(0, idx).trim().toLowerCase();
-              const value = line.slice(idx + 1).trim();
-              if (!key) return;
-              if (key === 'date') {
-                metadata.date = value;
-              } else if (key === 'categories') {
-                const m = value.match(/\[([^]*?)\]/);
-                if (m && m[1]) metadata.categories = m[1].split(',').map(s => s.trim()).filter(Boolean);
-              } else if (key === 'tags') {
-                const m = value.match(/\[([^]*?)\]/);
-                if (m && m[1]) metadata.tags = m[1].split(',').map(s => s.trim()).filter(Boolean);
-              }
-            });
-            const body = lines.slice(end + 1).join('\n');
-            return { metadata, body };
-          }
+    // 解析并剥离可能存在的 front-matter（以 --- 包裹的元数据）
+    function parseFrontMatter(content) {
+      const metadata = { date: '', categories: [], tags: [] };
+      const lines = content.split('\n');
+      if (lines.length > 0 && lines[0].trim() === '---') {
+        // 找到闭合的 --- 行
+        let end = -1;
+        for (let i = 1; i < lines.length; i++) {
+          if (lines[i].trim() === '---') { end = i; break; }
         }
-        return { metadata: null, body: content };
+        if (end > 0) {
+          const metaLines = lines.slice(1, end);
+          metaLines.forEach(line => {
+            const idx = line.indexOf(':');
+            if (idx === -1) return;
+            const key = line.slice(0, idx).trim().toLowerCase();
+            const value = line.slice(idx + 1).trim();
+            if (!key) return;
+            if (key === 'date') {
+              metadata.date = value;
+            } else if (key === 'categories') {
+              const m = value.match(/\[([^]*?)\]/);
+              if (m && m[1]) metadata.categories = m[1].split(',').map(s => s.trim()).filter(Boolean);
+            } else if (key === 'tags') {
+              const m = value.match(/\[([^]*?)\]/);
+              if (m && m[1]) metadata.tags = m[1].split(',').map(s => s.trim()).filter(Boolean);
+            }
+          });
+          const body = lines.slice(end + 1).join('\n');
+          return { metadata, body };
+        }
       }
+      return { metadata: null, body: content };
+    }
 
-      const { metadata: fm, body: md } = parseFrontMatter(raw);
+    const { metadata: fm, body: md } = parseFrontMatter(raw);
 
-      // 优先使用 Firestore 存储的 metadata，如果没有则使用 front-matter
-      const date = data.metadata?.date || (fm?.date || (data.createdAt ? new Date(data.createdAt).toLocaleString() : ''));
-      const categories = (data.metadata?.categories && data.metadata.categories.length) ? data.metadata.categories.join(' / ') : (fm?.categories ? fm.categories.join(' / ') : '');
-      const tags = (data.metadata?.tags && data.metadata.tags.length) ? data.metadata.tags.join(', ') : (fm?.tags ? fm.tags.join(', ') : '');
+    // 优先使用 Firestore 存储的 metadata，如果没有则使用 front-matter
+    const date = data.metadata?.date || (fm?.date || (data.createdAt ? new Date(data.createdAt).toLocaleString() : ''));
+    const categories = (data.metadata?.categories && data.metadata.categories.length) ? data.metadata.categories.join(' / ') : (fm?.categories ? fm.categories.join(' / ') : '');
+    const tags = (data.metadata?.tags && data.metadata.tags.length) ? data.metadata.tags.join(', ') : (fm?.tags ? fm.tags.join(', ') : '');
 
     // 更新页面
     document.title = `${title} - 博客`;
@@ -86,27 +86,45 @@ async function loadPost(id) {
     metaEl.textContent = metaParts.join('  ·  ');
 
 
-window.marked.setOptions({ gfm: true, breaks: true });
-  // 使用剥离后的正文（md）渲染 Markdown
-  // 注意：marked 输出未经过严格消毒；若需要请加入 DOMPurify 进行清洗。
-  const html = window.marked.parse(md || '');
+    window.marked.setOptions({ gfm: true, breaks: true });
+    // 使用剥离后的正文（md）渲染 Markdown
+    // 注意：marked 输出未经过严格消毒；若需要请加入 DOMPurify 进行清洗。
+    const html = window.marked.parse(md || '');
     contentEl.innerHTML = html || '<p>（无内容）</p>';
-   // 渲染数学公式（放在设置 contentEl.innerHTML 之后）
-if (window.renderMathInElement) {
-  renderMathInElement(contentEl, {
-    delimiters: [
-      { left: '$$', right: '$$', display: true },
-      { left: '$', right: '$', display: false },
-      { left: '\\(', right: '\\)', display: false },
-      { left: '\\[', right: '\\]', display: true }
-    ],
-    throwOnError: false,
-    trust: true // 允许渲染复杂公式（如分段函数cases）
-  });
-}
-if (window.Prism) {
+    // 渲染数学公式（放在设置 contentEl.innerHTML 之后）
+    if (window.renderMathInElement) {
+      renderMathInElement(contentEl, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '$', right: '$', display: false },
+          { left: '\\(', right: '\\)', display: false },
+          { left: '\\[', right: '\\]', display: true }
+        ],
+        throwOnError: false,
+        trust: true // 允许渲染复杂公式（如分段函数cases）
+      });
+    }
+    if (window.Prism) {
       Prism.highlightAllUnder(contentEl);
     }
+
+    // 使代码块可折叠
+    const collapsibleCodes = contentEl.querySelectorAll('pre');
+    collapsibleCodes.forEach(codeBlock => {
+      const collapsible = document.createElement('div');
+      collapsible.classList.add('collapsible-code');
+      collapsible.innerText = '点击展开/收起代码';
+      codeBlock.classList.add('collapsed-code');
+
+      collapsible.addEventListener('click', () => {
+        codeBlock.classList.toggle('collapsed-code');
+        collapsible.classList.toggle('expanded');
+      });
+
+      codeBlock.parentNode.insertBefore(collapsible, codeBlock);
+    });
+
+
     // 文章操作（例如返回首页）
     actionsEl.innerHTML = `
       <a href="index.html" class="btn">← 返回</a>

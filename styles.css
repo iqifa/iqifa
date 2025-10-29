@@ -272,3 +272,46 @@ a:hover { text-decoration: underline; }
   display: block; /* 避免图片底部出现额外空白 */
   margin: 1rem auto; /* 图片居中显示，上下添加间距 */
 }
+/* Collapsible Code Block */
+.collapsible-code {
+  cursor: pointer;
+  background-color: #f7f7f7;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 15px 0;
+  user-select: none;
+  font-weight: bold;
+}
+
+.collapsible-code::after {
+  content: ' ⬇️'; /* Default arrow for expansion */
+}
+
+.collapsible-code.expanded::after {
+  content: ' ⬆️'; /* Arrow for collapse */
+}
+
+.collapsed-code {
+  display: none;
+}
+
+.pre-wrap {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+
+
+pre[class*="language-"]{
+	background-color:rgba(154 245 240 / 26%)!important; 
+}
+
+
+
+/* 其他符号的高亮样式，如果需要特别调整 */
+pre code .token.operator,
+pre code .token.keyword,
+pre code .token.symbol {
+  background: none !important;
+}
