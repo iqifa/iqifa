@@ -315,3 +315,33 @@ pre code .token.keyword,
 pre code .token.symbol {
   background: none !important;
 }
+
+
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.editor-card {
+  flex: 1;
+}
+
+.sidebar-card {
+  width: 300px;
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.sidebar-card h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.sidebar-card p {
+  font-size: 14px;
+  color: var(--muted);
+}
