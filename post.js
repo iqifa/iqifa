@@ -38,7 +38,6 @@ async function loadPost(id) {
       const metadata = { date: '', categories: [], tags: [] };
       const lines = content.split('\n');
       if (lines.length > 0 && lines[0].trim() === '---') {
-        // 找到闭合的 --- 行
         let end = -1;
         for (let i = 1; i < lines.length; i++) {
           if (lines[i].trim() === '---') { end = i; break; }
@@ -90,7 +89,43 @@ async function loadPost(id) {
     // 使用剥离后的正文（md）渲染 Markdown
     // 注意：marked 输出未经过严格消毒；若需要请加入 DOMPurify 进行清洗。
     const html = window.marked.parse(md || '');
+
+
+    
+    
+
     contentEl.innerHTML = html || '<p>（无内容）</p>';
+
+    
+
+
+    const headings = [];
+    const parser = new DOMParser();
+    const doc_dir = parser.parseFromString(html , 'text/html');
+    const allHeadings = contentEl.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+    allHeadings.forEach((heading) => {
+      const id = heading.id || heading.textContent.trim().replace(/\s+/g, '-');
+      heading.id = id; // Assign an ID to each heading
+      headings.push({ level: parseInt(heading.tagName[1]), text: heading.textContent, id });
+    });
+
+
+    console.log(headings);
+
+
+    // Update the TOC
+    const tocEl = document.getElementById('toc');
+    if (tocEl) {
+      const ul = document.createElement('ul');
+      headings.forEach(heading => {
+        const li = document.createElement('li');
+        li.style.marginLeft = `${(heading.level - 1) * 20}px`; // Indentation based on level
+        li.innerHTML = `<a href="#${heading.id}">${heading.text}</a>`;
+        ul.appendChild(li);
+      });
+      tocEl.appendChild(ul);
+    }
     // 渲染数学公式（放在设置 contentEl.innerHTML 之后）
     if (window.renderMathInElement) {
       renderMathInElement(contentEl, {

@@ -345,3 +345,28 @@ pre code .token.symbol {
   font-size: 14px;
   color: var(--muted);
 }
+.sidebar-card h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+#toc ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+#toc ul li {
+  font-size: 14px;
+}
+
+#toc ul li a {
+  color: var(--primary-600);
+  text-decoration: none;
+}
+
+#toc ul li a:hover {
+  text-decoration: underline;
+}
+html {
+  scroll-behavior: smooth;
+}
