@@ -22,11 +22,12 @@ html,body { height: 100%; }
 body {
 	margin: 0;
 	font-family: var(--font-sans);
-	background: linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+	background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
 	color: #111827;
 	-webkit-font-smoothing:antialiased;
 	-moz-osx-font-smoothing:grayscale;
 	line-height: 1.45;
+	font-size: 10px;
 }
 
 .container {
@@ -305,6 +306,7 @@ a:hover { text-decoration: underline; }
 
 pre[class*="language-"]{
 	background-color:rgba(154 245 240 / 26%)!important; 
+	font-size: 10px !important;
 }
 
 
