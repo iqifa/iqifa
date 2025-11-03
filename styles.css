@@ -322,6 +322,9 @@ pre code .token.symbol {
   display: flex;
   justify-content: space-between;
   gap: 20px;
+  flex-wrap: wrap;  /* Allows content to wrap to the next line if needed */
+  align-items: flex-start;  /* Ensure items align to the top */
+  padding-top: 20px;  /* Optional, to prevent content from hiding under sticky sidebar */
 }
 
 .editor-card {
@@ -334,8 +337,13 @@ pre code .token.symbol {
   padding: 20px;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  height: auto;  /* Ensure the height adjusts based on content */
+  flex-shrink: 0;  /* Prevent shrinking when using flex layout */
+  margin-top: 20px;  /* Optional, to add spacing between cards */
+  
+  position: sticky;  /* Make it stick to the viewport */
+  top: 20px;  /* Adjust this value to control the distance from the top of the page */
 }
-
 .sidebar-card h2 {
   margin-top: 0;
   font-size: 18px;
