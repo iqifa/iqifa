@@ -39,14 +39,23 @@ export class AdminManager {
 
     // 登录与注销
     async login() {
+        const emailInput = document.getElementById('admin-email');
         const pwdInput = document.getElementById('admin-pwd');
+        
+        const email = emailInput.value;
         const pwd = pwdInput.value;
-        const email = "admin@iqifa-blog.com"; 
+        
+        if (!email || !pwd) {
+            alert("Please enter both email and password");
+            return;
+        }
+
         try { 
             await signInWithEmailAndPassword(auth, email, pwd); 
             // 登录成功后清空密码框
             pwdInput.value = '';
         } catch (e) { 
+            console.error(e);
             alert("登录失败: " + e.message); 
         }
     }
