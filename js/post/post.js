@@ -253,6 +253,10 @@ export class PostManager {
         const contentEl = document.getElementById('markdown-content');
         contentEl.innerHTML = marked.parse(post.body);
         
+        if (window.Prism) {
+            window.Prism.highlightAllUnder(contentEl);
+        }
+
         if (typeof renderMathInElement !== 'undefined') {
             renderMathInElement(contentEl, { 
                 delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ], 

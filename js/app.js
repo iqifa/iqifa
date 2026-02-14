@@ -35,9 +35,47 @@ class App {
         
         // 6. 处理初始路由
         this.handleRoute();
+        // 7. 全局复制按钮监听
+        this.initCopyListener();
+
         window.addEventListener('hashchange', () => this.handleRoute());
     }
+initCopyListener() {
+        document.addEventListener('click', async (e) => {
+            // 查找是否点击了 .copy-btn 或其内部图标
+            const btn = e.target.closest('.copy-btn');
+            if (!btn) return;
 
+            // 阻止冒泡，防止触发 details 的折叠/展开
+            e.preventDefault();
+            e.stopPropagation();
+
+            // 找到对应的代码块
+            const details = btn.closest('details');
+            const codeBlock = details.querySelector('code');
+            
+            if (!codeBlock) return;
+
+            try {
+                // 执行复制
+                await navigator.clipboard.writeText(codeBlock.innerText);
+                
+                // 视觉反馈：图标变成对勾
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.classList.add('copied');
+                
+                // 2秒后恢复
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                alert('复制失败，请手动复制');
+            }
+        });
+}
     // --- 加载个人资料 ---
     async loadProfile() {
         try {

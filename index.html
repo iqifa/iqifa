@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Tech Blog</title>
+    <title>PI</title>
+    <link rel="icon" href="./assets/Raze-Icon-2.png" type="image/jpeg">
     <!-- CSS 库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-vsc-dark-plus.min.css">
     
-    <!-- 本地样式 -->
+        <!-- 本地样式 -->
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
@@ -19,7 +20,7 @@
 
 <!-- 导航栏 -->
 <header>
-    <div class="nav-brand" onclick="window.router('home')"><i class="fas fa-code"></i> MyBlog</div>
+    <div class="nav-brand" onclick="window.router('home')"><img src="./assets/Raze-Icon-1.png" alt="Logo" class="nav-logo"> PI</div>
     <div class="nav-links">
         <span onclick="window.router('home')" id="nav-home">Home</span>
         <span onclick="window.router('admin')" id="nav-admin">Admin</span>
@@ -157,9 +158,19 @@
 
 <!-- JS 库 -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<!-- 自动加载器及其配置 (修复路径问题) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script>
+    // 强制指定语言包路径，解决 CDN 路径猜测错误导致自动高亮失败的问题
+    if (window.Prism && window.Prism.plugins && window.Prism.plugins.autoloader) {
+        window.Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+    }
+</script>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
 
 <!-- 核心业务逻辑 -->
 <script type="module" src="./js/app.js"></script>

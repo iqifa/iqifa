@@ -144,7 +144,6 @@ header {
 .markdown-body { color: #e2e8f0; line-height: 1.8; overflow-wrap: break-word; }
 .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 { margin-top: 24px; color: #fff; border-bottom: 1px solid #334155; padding-bottom: 0.3em; }
 .markdown-body h3 { font-size: 1.25em; border-bottom: none; }
-.markdown-body code { background: rgba(255,255,255,0.1); padding: 0.2em 0.4em; border-radius: 3px; font-family: monospace; color: #f472b6; }
 .markdown-body img { max-width: 100%; border-radius: 4px; }
 .markdown-body blockquote { border-left: 4px solid var(--accent-color); background: rgba(96, 165, 250, 0.1); padding: 10px 20px; margin: 1em 0; color: #94a3b8; }
 
@@ -318,4 +317,99 @@ textarea.editor-area {
 .page-dots {
     color: var(--text-light);
     margin: 0 5px;
+}
+
+
+/* --- 代码块与复制按钮样式 --- */
+
+/* 移除 summary 默认的小三角 */
+.code-details > summary {
+    list-style: none;
+    background: #1e293b; /* 与你的卡片背景色协调 */
+    padding: 8px 15px;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between; /* 左右分布 */
+    align-items: center;
+    cursor: pointer;
+    color: #94a3b8;
+    font-family: monospace;
+    font-size: 0.85rem;
+    user-select: none;
+}
+
+/* 兼容 Chrome/Safari 隐藏默认三角 */
+.code-details > summary::-webkit-details-marker {
+    display: none;
+}
+
+/* 语言标签 */
+.lang-label {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+/* 右侧工具区容器 */
+.summary-tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 复制按钮样式 */
+.copy-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #94a3b8;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copy-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border-color: var(--accent-color);
+}
+
+/* 复制成功后的状态类 */
+.copy-btn.copied {
+    color: #4ade80; /* 绿色 */
+    border-color: #4ade80;
+}
+
+/* 代码块容器微调 */
+.code-details pre {
+    margin: 0 !important;
+    border-radius: 0 0 6px 6px !important; /* 只有底部圆角 */
+    border: none !important; /* 移除可能的边框 */
+}
+
+/* 修改 .nav-brand，开启 Flex 布局以保证垂直居中 */
+.nav-brand { 
+    font-size: 1.2rem; 
+    font-weight: bold; 
+    color: #fff; 
+    cursor: pointer; 
+    text-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+    
+    /* 新增：Flex 布局 */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* 图标和文字之间的间距 */
+}
+
+/* 新增：Logo 图片样式 */
+.nav-logo {
+    height: 32px;       /* 控制高度，不要撑破导航栏 */
+    width: 32px;        /* 保持正方形 */
+    border-radius: 50%; /* 圆形头像，如果想要方形去掉这行 */
+    object-fit: cover;  /* 防止图片变形 */
+    border: 2px solid rgba(255, 255, 255, 0.2); /* 可选：加个微弱的边框 */
 }

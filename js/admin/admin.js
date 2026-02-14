@@ -216,6 +216,9 @@ Write content...`;
         const previewEl = document.getElementById('editor-preview');
         if(previewEl) {
             previewEl.innerHTML = marked.parse(body);
+            if (window.Prism) {
+                window.Prism.highlightAllUnder(previewEl);
+            }
             if (typeof renderMathInElement !== 'undefined') {
                 renderMathInElement(previewEl, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ] });
             }
