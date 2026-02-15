@@ -74,16 +74,26 @@ Github Pages 部署，Firebase 数据库
 
 1. 转为base64模式，直接嵌入markdown 好处是再文本内部，不会丢失，缺点是如果图片过多或者过大，会超过content大小，写不进数据库。
 2. 上传图床模式，这种可以直接按本地引用的方式插入图片无非换成URL链接，但是图床我觉得大部分不算稳定，还要本地存储一份。
+3. 我推荐[$Imgur$](https://imgur.com/)可以作为良好的图床网站，而且大概率不会跑路，以及优秀的管理界面。(真的好用！！！)
 
-## 更新日志
-#### version 0.2.0
-- 优化视觉效果
-    
-    - 界面色调修改，三栏格式修改
-    - 添加星空背景
-- 编辑界面重写
+## 🚀 更新日志
 
-    - 不再使用 **Toast UI Editor**作为markdown编辑器
-    - 调整editor和preview 修复双栏的各种bug
-#### version 0.1.0
-- 发布
+### v0.2.1 
+**✨ 代码阅读体验升级**
+- **Syntax Highlighting**: 迁移高亮引擎 ($Highlight.js \rightarrow PrismJS$)，大幅提升渲染精度。
+- **Shader Support**: 新增图形学语言支持，完美高亮 $HLSL$ / $GLSL$ 着色器代码。
+- **Interaction**: 为代码块新增「一键复制」按钮，交互更丝滑。
+- **Branding**: 顶部导航栏实装个人 Logo 与站点名称。
+
+### v0.2.0 
+**🎨 视觉重构 & 编辑器重写**
+- **UI Overhaul**: 全站启用深色沉浸式主题，重构三栏布局，降低视觉噪点。
+- **Atmosphere**: 引入 Canvas 动态星空背景，增加页面灵动感。
+- **Editor Refactor**: 
+    - 移除臃肿的 **Toast UI Editor** 依赖。
+    - 轻量级 Markdown 编辑器，实现双栏实时预览与同步滚动。
+    - 修复了 Admin 后台在不同分辨率下的布局崩坏问题。
+
+### v0.1.0 
+**🎉 Hello World**
+- 项目初始化，完成基础博客功能发布。
