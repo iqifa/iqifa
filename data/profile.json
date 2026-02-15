@@ -3,8 +3,8 @@
     "avatar": "assets/head.jpg",
     "bio": "摆！摆兵就该摆！",
     "socials": [
-        { "icon": "fab fa-github", "link": "https://github.com/yourname", "name": "GitHub" },
-        { "icon": "fab fa-twitter", "link": "https://twitter.com/yourname", "name": "Twitter" },
-        { "icon": "fas fa-envelope", "link": "mailto:test@example.com", "name": "Email" }
+        { "icon": "fab fa-github", "link": "https://github.com/iqifa", "name": "GitHub" },
+        { "icon": "fab fa-twitter", "link": "https://twitter.com", "name": "Twitter" },
+        { "icon": "fas fa-envelope", "link": "1264317588@qq.com", "name": "Email" }
     ]
 }
