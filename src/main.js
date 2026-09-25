@@ -1,5 +1,10 @@
 import './style.css';
-import { projects, imagePath } from './data.js';
+import { projects, albums, imagePath } from './data.js';
+import { createRecordPlayer } from './record-player.js';
+import './record-player.css';
+import { createTabletop } from './tabletop.js';
+import './tabletop.css';
+import './player-drawer.css';
 
 const arrow = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.5"/></svg>';
 const chevron = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="1.5"/></svg>';
@@ -13,9 +18,9 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
  document.querySelector('#app').innerHTML = `
   <header class="header">
     <a class="wordmark" href="#" aria-label="Éther home">ÉTHER<span>®</span></a>
-    <span class="brand-descriptor">INDEPENDENT CREATIVE STUDIO<br>ART, TECHNOLOGY & THE IN-BETWEEN</span>
+    <span class="brand-descriptor">AN INDEPENDENT LISTENING ROOM<br>GOOD RECORDS. DIFFERENT PERSPECTIVES.</span>
     <nav class="navigation" aria-label="Main navigation">
-      <button class="nav-link active" id="work-nav">Work <sup>12</sup></button>
+      <button class="nav-link active" id="work-nav">Records <sup>12</sup></button>
       <button class="nav-link" id="about-nav">About</button>
       <button class="contact-nav" id="contact-nav">Let’s talk <span>${arrow}</span></button>
     </nav>
@@ -23,42 +28,48 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   <main id="main">
     <section class="introduction" aria-labelledby="hero-title">
-      <div class="eyebrow"><span class="status-dot"></span> A SPACE FOR THE UNEXPECTED</div>
-      <h1 id="hero-title">A different<br><span>perspective.</span><span class="title-period">↗</span></h1>
-      <p>Exploring the possibilities between<br>what is real and what could be.</p>
-      <button class="explore-link" id="explore-button">Step inside <span>↗</span></button>
+      <div class="eyebrow"><span class="status-dot"></span> A SPACE FOR SLOW LISTENING</div>
+      <h1 id="hero-title">A different<br><span>frequency.</span><span class="title-period">↗</span></h1>
+      <p>Find a record. Let it spin.<br>A little less noise. A little more feeling.</p>
+      <button class="explore-link" id="explore-button">Drop the needle <span>↗</span></button>
     </section>
 
-    <div class="archive-label"><span>SELECTED EXPLORATIONS</span><span>2024 — 2026</span></div>
+    <div class="archive-label"><span>THE RECORD COLLECTION</span><span>33⅓ RPM / STEREO</span></div>
     <section class="gallery-stage" id="gallery" aria-label="Interactive spatial gallery. Scroll, drag, or use arrow keys to explore.">
       <div class="gallery-origin" id="gallery-origin">
         ${projects.map((p, i) => `
-          <button class="artwork" data-index="${i}" aria-label="View ${p.title}" style="--art-color:${p.color};--ratio:${p.ratio}">
+          <button class="artwork" data-index="${i}" aria-label="播放 ${p.title}" aria-pressed="false" style="--art-color:${p.color}">
             <span class="artwork-surface">
-              <img src="${imagePath(p)}" alt="${p.title} — ${p.category}" draggable="false" decoding="async" fetchpriority="${i === 4 ? 'high' : 'auto'}" />
-              <span class="artwork-sheen"></span>
-              <span class="artwork-label"><span>${p.title}</span><span>↗</span></span>
+              <span class="vinyl-slot" aria-hidden="true">
+                <span class="vinyl-disc"><span class="vinyl-label"><span>ÉTHER / ${num(i + 1)}</span><span class="vinyl-hole"></span><span>SIDE A · 33⅓</span></span></span>
+              </span>
+              <span class="album-sleeve">
+                <img src="${imagePath(p)}" alt="${p.title} 专辑封面" draggable="false" decoding="async" fetchpriority="${i === 4 ? 'high' : 'auto'}" />
+                <span class="artwork-sheen"></span>
+                <span class="sleeve-catalog">ÉTHER RECORDS / ${num(i + 1)}</span>
+                <span class="artwork-label"><span>${p.title}</span><span class="sleeve-play-symbol">▶</span></span>
+              </span>
             </span>
           </button>
         `).join('')}
       </div>
     </section>
     <span class="axis-note" aria-hidden="true">IMAGINATION HAS NO FIXED POINT OF VIEW <span>↓</span></span>
-    <div class="gallery-cursor" id="gallery-cursor" aria-hidden="true">VIEW <span>↗</span></div>
+    <div class="gallery-cursor" id="gallery-cursor" aria-hidden="true">PLAY <span>↗</span></div>
 
     <section class="index-panel" id="index-panel" aria-labelledby="index-title" hidden>
-      <div class="index-heading"><div><span class="eyebrow">THE SELECTED ARCHIVE / 2024 — 2026</span><h2 id="index-title">Work index<span>(${num(projects.length)})</span></h2></div>
-        <div class="index-filters" role="group" aria-label="Filter work">
-          <button class="filter active" data-filter="all" aria-pressed="true">All work <sup>12</sup></button>
+      <div class="index-heading"><div><span class="eyebrow">THE SELECTED COLLECTION / SYNTHESIZED DEMOS</span><h2 id="index-title">Record index<span>(${num(projects.length)})</span></h2></div>
+        <div class="index-filters" role="group" aria-label="Filter records by cover art">
+          <button class="filter active" data-filter="all" aria-pressed="true">All records <sup>12</sup></button>
           <button class="filter" data-filter="art" aria-pressed="false">Art & imagination</button>
           <button class="filter" data-filter="study" aria-pressed="false">Studies & form</button>
         </div>
       </div>
       <div class="index-grid" id="index-grid">
         ${projects.map((p, i) => `
-          <button class="index-card" data-index="${i}" data-group="${/studies|form/i.test(p.category) ? 'study' : 'art'}" aria-label="View ${p.title}">
-            <div class="index-image" style="background:${p.color}"><img src="${imagePath(p)}" alt="${p.title}" loading="lazy" /><span class="index-image-arrow">${arrow}</span></div>
-            <div class="index-card-info"><span class="index-card-number">${num(i + 1)}</span><span class="index-card-title">${p.title}<small>${p.category}</small></span><span class="index-card-year">${p.year}</span></div>
+          <button class="index-card" data-index="${i}" data-group="${/studies|form/i.test(p.category) ? 'study' : 'art'}" aria-label="播放 ${p.title}" aria-pressed="false">
+            <div class="index-image" style="background:${p.color}"><img src="${imagePath(p)}" alt="${p.title}" loading="lazy" /><span class="index-image-arrow">▶</span></div>
+            <div class="index-card-info"><span class="index-card-number">${num(i + 1)}</span><span class="index-card-title">${p.title}<small>${albums[i].genre} · Synth demo</small></span><span class="index-card-year">${p.year}</span></div>
           </button>
         `).join('')}
       </div>
@@ -101,9 +112,9 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     <button class="dialog-close" data-close aria-label="Close about">${cross}</button>
     <span class="eyebrow"><span class="status-dot"></span> A LITTLE ABOUT THIS SPACE</span>
     <h2 id="about-title">Curiosity,<br>without limits<span class="green-period">.</span></h2>
-    <div class="about-columns"><p>We believe the most interesting things happen in the in-between.</p><div><p>ÉTHER is a concept for an independent creative practice, exploring the intersection of art, technology and human imagination.</p><p>This spatial archive is an invitation to slow down, look closer, and find a different perspective.</p></div></div>
-    <div class="disciplines"><span>Art direction</span><span>Image-making</span><span>Digital experiences</span><span>Creative exploration</span></div>
-    <div class="about-credit">AN INTERFACE STUDY INSPIRED BY <a href="https://unveil.fr/" target="_blank" rel="noopener noreferrer">UNVEIL® ↗</a><p>ÉTHER is a fictional demonstration brand, not affiliated with UNVEIL. Artwork belongs to its respective creators and is included for visual reference only. Descriptions are interpretive demo copy.</p></div>
+    <div class="about-columns"><p>Good records deserve a little room to breathe.</p><div><p>ÉTHER is a concept listening room. Browse a collection, slide a record from its sleeve, and find your own frequency.</p><p>Each demo pairs visual art with a small synthesized sound sketch. Pause, rewind, or let the next record find you.</p></div></div>
+    <div class="disciplines"><span>Ambient</span><span>Electronica</span><span>Soundscapes</span><span>Slow listening</span></div>
+    <div class="about-credit">AN INTERFACE STUDY INSPIRED BY <a href="https://unveil.fr/" target="_blank" rel="noopener noreferrer">UNVEIL® ↗</a><p>ÉTHER is a fictional demonstration brand, not affiliated with UNVEIL. Cover artwork belongs to its respective creators and is used for visual reference only. Audio is synthesized demo music, not recordings associated with the original artwork.</p></div>
   </dialog>
 
   <dialog class="contact-dialog text-dialog" id="contact-dialog" aria-labelledby="contact-title">
@@ -146,15 +157,57 @@ let viewport = { width: window.innerWidth, height: window.innerHeight };
 let layoutDirty = true;
 let layout;
 let dialogOpen = false;
+let tabletopLocked = false;
+const tabletop = createTabletop({
+  gallery,
+  cards: artworkElements,
+  onLockChange(locked) {
+    tabletopLocked = locked;
+    clearTimeout(snapTimer);
+    if (locked) {
+      finishDrag();
+      setHovered(-1);
+    }
+    layoutDirty = true;
+    resumeAnimation();
+  },
+});
+const albumCards = [...document.querySelectorAll('[data-index]')];
+const recordPlayer = createRecordPlayer({
+  albums,
+  getDefaultIndex: () => activeIndex,
+  onSelect(index) {
+    if (view !== 'space') setView('space');
+    setHovered(-1);
+    focusProject(index);
+    tabletop.select(index);
+  },
+  onDetails: openProject,
+  onChange({ index, playing, loading }) {
+    if (index < 0) tabletop.exit();
+    albumCards.forEach((card) => {
+      const selected = Number(card.dataset.index) === index;
+      const spinning = selected && playing;
+      card.classList.toggle('is-selected', selected);
+      card.classList.toggle('is-playing', spinning);
+      card.setAttribute('aria-pressed', String(selected));
+      card.setAttribute('aria-label', `${selected && (playing || loading) ? '暂停' : '播放'} ${albums[Number(card.dataset.index)].title}`);
+      const symbol = card.querySelector('.sleeve-play-symbol');
+      if (symbol) symbol.textContent = spinning ? 'Ⅱ' : '▶';
+    });
+    cursor.firstChild.textContent = hovered === index && playing ? 'PAUSE ' : 'PLAY ';
+    if (selectedIndex >= 0) selectedWork.setAttribute('aria-label', `${selectedIndex === index && playing ? '暂停' : '播放'} ${albums[selectedIndex].title}`);
+  },
+});
 
 function showSelected(index) {
   if (index === selectedIndex) return;
   selectedIndex = index;
   const p = projects[index];
   selectedTitle.textContent = p.title;
-  selectedCategory.textContent = `${p.category}, ${p.year}`;
+  selectedCategory.textContent = `${albums[index].genre} · Synth demo`;
   selectedCount.innerHTML = `${num(index + 1)} <span>/ ${num(projects.length)}</span>`;
-  selectedWork.setAttribute('aria-label', `View ${p.title}`);
+  selectedWork.setAttribute('aria-label', `${recordPlayer.index === index && recordPlayer.playing ? '暂停' : '播放'} ${p.title}`);
 }
 
 function setArtworkStyle(state, property, value) {
@@ -168,16 +221,16 @@ function updateLayout() {
   const scale = mobile ? Math.min(viewport.width / 520, viewport.height / 760) : Math.min(viewport.width / 1440, viewport.height / 860);
   const bounds = gallery.getBoundingClientRect();
   layout = {
-    anchorX: viewport.width * (mobile ? 0.56 : 0.66),
-    anchorY: viewport.height * (mobile ? 0.54 : 0.51),
-    height: (mobile ? 330 : 356) * scale,
+    anchorX: viewport.width * (mobile ? 0.43 : 0.61),
+    anchorY: (bounds.top + bounds.bottom) / 2 + (mobile ? 30 : 0),
+    height: (mobile ? 245 : 300) * scale,
     stepX: (mobile ? 111 : 123) * scale,
     stepY: (mobile ? 86 : 84) * scale,
     top: bounds.top,
     bottom: bounds.bottom,
   };
-  artworkStates.forEach((state, index) => {
-    state.width = layout.height * projects[index].ratio;
+  artworkStates.forEach((state) => {
+    state.width = layout.height;
     setArtworkStyle(state, 'width', `${state.width.toFixed(2)}px`);
     setArtworkStyle(state, 'height', `${layout.height.toFixed(2)}px`);
   });
@@ -191,7 +244,7 @@ function approach(current, destination, easing, epsilon) {
 
 function render(now) {
   frameId = null;
-  if (view !== 'space' || document.hidden || dialogOpen) return;
+  if (view !== 'space' || document.hidden || dialogOpen || tabletopLocked) return;
   if (layoutDirty) updateLayout();
   const elapsed = Math.min((now - previousFrame) / 16.67 || 1, 3);
   previousFrame = now;
@@ -213,7 +266,8 @@ function render(now) {
     const y = layout.anchorY - depth * layout.stepY + smoothedPointer.y * (8 + depth * 1.3);
     const halfWidth = state.width * size / 2;
     const halfHeight = (layout.height + state.width * 0.2) * size / 2;
-    const visible = x + halfWidth + 120 > 0 && x - halfWidth < viewport.width && y + halfHeight > layout.top && y - halfHeight < layout.bottom;
+    const rightExtension = index === recordPlayer.index ? state.width * size * 0.7 + 30 : 120;
+    const visible = x + halfWidth + rightExtension > 0 && x - halfWidth < viewport.width && y + halfHeight > layout.top && y - halfHeight < layout.bottom;
     setArtworkStyle(state, 'visibility', visible ? 'visible' : 'hidden');
     if (!visible) return;
     const order = mod(index - Math.floor(position) + projects.length / 2, projects.length) - projects.length / 2;
@@ -231,7 +285,7 @@ function render(now) {
 }
 
 function resumeAnimation() {
-  if (view !== 'space' || document.hidden || dialogOpen) {
+  if (view !== 'space' || document.hidden || dialogOpen || tabletopLocked) {
     cancelAnimationFrame(frameId);
     frameId = null;
     return;
@@ -247,6 +301,7 @@ function setHovered(index) {
   hovered = index;
   if (hovered >= 0) artworkElements[hovered].classList.add('is-hovered');
   cursor.classList.toggle('visible', hovered >= 0);
+  cursor.firstChild.textContent = hovered === recordPlayer.index && recordPlayer.playing ? 'PAUSE ' : 'PLAY ';
   cursorDirty = true;
   showSelected(hovered >= 0 ? hovered : activeIndex);
   resumeAnimation();
@@ -268,6 +323,7 @@ function focusProject(index) {
 }
 
 function setView(nextView) {
+  tabletop.exit();
   view = nextView;
   document.body.classList.toggle('index-mode', view === 'index');
   document.querySelector('#index-panel').hidden = view !== 'index';
@@ -288,14 +344,21 @@ window.addEventListener('resize', () => {
   layoutDirty = true;
   resumeAnimation();
 });
-document.addEventListener('visibilitychange', resumeAnimation);
+window.addEventListener('playerdrawerchange', () => {
+  layoutDirty = true;
+  resumeAnimation();
+});
+document.addEventListener('visibilitychange', () => {
+  document.body.classList.toggle('page-hidden', document.hidden);
+  resumeAnimation();
+});
 reducedMotion.addEventListener('change', () => {
   pointer.x = 0;
   pointer.y = 0;
   resumeAnimation();
 });
 window.addEventListener('pointermove', (event) => {
-  if (view !== 'space' || dialogOpen || (drag && drag.pointerId !== event.pointerId)) return;
+  if (view !== 'space' || dialogOpen || tabletopLocked || (drag && drag.pointerId !== event.pointerId)) return;
   if (event.pointerType !== 'touch') {
     cursorPosition.x = event.clientX;
     cursorPosition.y = event.clientY;
@@ -326,7 +389,7 @@ window.addEventListener('pointermove', (event) => {
 }, { passive: true });
 
 gallery.addEventListener('pointerdown', (event) => {
-  if (event.button !== 0) return;
+  if (event.button !== 0 || tabletopLocked) return;
   clearTimeout(snapTimer);
   drag = { x: event.clientX, y: event.clientY, start: target, moved: false, pointerId: event.pointerId };
 });
@@ -345,7 +408,7 @@ window.addEventListener('pointerup', finishDrag);
 window.addEventListener('pointercancel', finishDrag);
 window.addEventListener('blur', finishDrag);
 window.addEventListener('wheel', (event) => {
-  if (view !== 'space' || dialogOpen || event.ctrlKey || drag) return;
+  if (view !== 'space' || dialogOpen || event.ctrlKey || drag || tabletopLocked) return;
   event.preventDefault();
   setHovered(-1);
   const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.height : 1;
@@ -361,7 +424,7 @@ window.addEventListener('wheel', (event) => {
 
 artworkElements.forEach((element, index) => {
   element.addEventListener('pointerenter', (event) => {
-    if (drag || event.pointerType === 'touch' || Math.abs(target - position) >= 0.01 || view !== 'space' || dialogOpen) return;
+    if (drag || event.pointerType === 'touch' || Math.abs(target - position) >= 0.01 || view !== 'space' || dialogOpen || tabletopLocked) return;
     cursorPosition.x = event.clientX;
     cursorPosition.y = event.clientY;
     setHovered(index);
@@ -376,14 +439,14 @@ artworkElements.forEach((element, index) => {
 document.querySelectorAll('[data-index]').forEach((element) => {
   element.addEventListener('click', () => {
     if (performance.now() - lastDrag < 250) return;
-    openProject(Number(element.dataset.index));
+    recordPlayer.select(Number(element.dataset.index));
   });
 });
 positionMarks.forEach((mark) => mark.addEventListener('click', () => focusProject(Number(mark.dataset.position))));
 document.querySelector('#previous-project').addEventListener('click', () => step(-1));
 document.querySelector('#next-project').addEventListener('click', () => step(1));
-document.querySelector('#explore-button').addEventListener('click', () => step(1));
-document.querySelector('#selected-work').addEventListener('click', () => openProject(hovered >= 0 ? hovered : activeIndex));
+document.querySelector('#explore-button').addEventListener('click', () => recordPlayer.select(activeIndex));
+document.querySelector('#selected-work').addEventListener('click', () => recordPlayer.select(hovered >= 0 ? hovered : activeIndex));
 document.querySelector('#space-view').addEventListener('click', () => setView('space'));
 document.querySelector('#index-view').addEventListener('click', () => setView('index'));
 document.querySelector('#work-nav').addEventListener('click', () => setView('index'));
@@ -394,6 +457,7 @@ function showDialog(id) {
   setHovered(-1);
   dialog.showModal();
   dialogOpen = true;
+  document.body.classList.add('dialog-open');
   resumeAnimation();
 }
 function updateProject(index) {
@@ -428,11 +492,13 @@ document.querySelectorAll('dialog').forEach((dialog) => {
   });
   dialog.addEventListener('close', () => {
     dialogOpen = !!document.querySelector('dialog[open]');
+    document.body.classList.toggle('dialog-open', dialogOpen);
     if (dialog.id === 'project-dialog') focusProject(modalIndex);
     resumeAnimation();
   });
 });
 window.addEventListener('keydown', (event) => {
+  if (event.target instanceof Element && event.target.closest('input, textarea, select, [contenteditable="true"]')) return;
   if (!['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'].includes(event.key) || event.altKey || event.metaKey || event.ctrlKey) return;
   const openDialog = document.querySelector('dialog[open]');
   const direction = ['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1;
@@ -441,7 +507,8 @@ window.addEventListener('keydown', (event) => {
     updateProject(modalIndex + direction);
   } else if (!openDialog && view === 'space') {
     event.preventDefault();
-    step(direction);
+    if (tabletopLocked) recordPlayer.changeAlbum(direction);
+    else step(direction);
   }
 });
 

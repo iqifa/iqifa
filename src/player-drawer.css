@@ -1,0 +1,87 @@
+:root {
+  --player-expanded-height: 150px;
+  --player-handle-height: 44px;
+  --console-height: var(--player-expanded-height);
+}
+body.player-collapsed { --console-height: var(--player-handle-height); }
+.player-drawer { width: min(100%, 1040px); margin-inline: auto; border: 1px solid #dfe2d5; border-bottom: 0; border-radius: 18px 18px 0 0; background: #f8f9f4; box-shadow: 0 -8px 32px #3b43230a; overflow: hidden; }
+.player-drawer-handle { width: 100%; height: var(--player-handle-height); padding: 0 22px; position: relative; display: flex; align-items: center; justify-content: space-between; gap: 20px; text-align: left; background: #f8f9f4; transition: background .2s; }
+.player-drawer-handle:hover { background: #f0f3e8; }
+.player-drawer-handle:focus-visible { outline-offset: -4px; border-radius: 16px 16px 0 0; }
+.drawer-grip { position: absolute; top: 9px; left: 50%; width: 34px; height: 3px; border-radius: 4px; background: #ccd2bd; transform: translateX(-50%); }
+.drawer-summary { display: flex; align-items: center; gap: 12px; min-width: 0; padding-top: 5px; }
+.drawer-summary strong { font-size: 10px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
+.drawer-summary > span { font: 6px var(--mono); letter-spacing: .06em; color: #959c87; white-space: nowrap; }
+.player-drawer.is-playing .drawer-summary > span { color: #718c39; }
+.drawer-action { display: flex; align-items: center; gap: 8px; flex-shrink: 0; color: #879074; font-size: 9px; padding-top: 5px; }
+.drawer-chevron { transition: transform .35s; }
+.drawer-chevron svg { width: 15px; height: 15px; }
+.player-drawer.is-collapsed .drawer-chevron { transform: rotate(180deg); }
+.player-drawer-body { display: grid; grid-template-rows: 1fr; opacity: 1; transition: grid-template-rows .38s cubic-bezier(.22,.75,.2,1), opacity .25s; }
+.player-drawer.is-collapsed .player-drawer-body { grid-template-rows: 0fr; opacity: 0; pointer-events: none; }
+.player-drawer-clip { min-height: 0; overflow: hidden; }
+.player-drawer .record-console { height: calc(var(--player-expanded-height) - var(--player-handle-height)); padding: 6px 24px 16px; border: 0; grid-template-columns: minmax(150px, 1fr) auto minmax(140px, 1.3fr) auto; grid-template-rows: 64px 20px; column-gap: 24px; row-gap: 0; }
+.player-drawer .console-album { gap: 12px; }
+.player-drawer .console-art { width: 44px; height: 44px; }
+.player-drawer .console-album-copy strong { font-size: 13px; }
+.player-drawer .console-album-copy small { font-size: 6px; }
+.player-drawer .console-transport { gap: 12px; }
+.player-drawer .console-transport #record-toggle { width: 44px; height: 44px; }
+.player-drawer .console-timeline { font-size: 8px; }
+.player-drawer .record-console .console-status { position: static; display: block; grid-column: 1 / -1; grid-row: 2; justify-self: center; max-width: 100%; font: 7px/1.6 var(--mono); letter-spacing: .04em; text-align: center; color: #959e84; }
+.player-drawer .record-console.has-error .console-status { color: #9d492d; }
+.player-drawer .console-tools { gap: 10px; }
+.tabletop-mode .gallery-stage { bottom: 46px; }
+.tabletop-mode .footer { background: transparent; }
+.tabletop-mode .footer-meta { background: #efeee7; }
+.tabletop-mode .tabletop-note { opacity: 0; visibility: hidden; }
+.tabletop-mode .player-drawer { background: #f8f9f4; border-color: #dce1cf; box-shadow: 0 -10px 45px #3b43230d; }
+@media (max-width: 1100px) {
+  .player-drawer .record-console { column-gap: 16px; grid-template-columns: minmax(120px, 1fr) auto minmax(110px, 1fr) auto; padding-inline: 20px; }
+  .player-drawer .console-tools { gap: 5px; }
+  .player-drawer .console-transport { gap: 6px; }
+  .player-drawer .console-art { width: 36px; height: 36px; }
+  .player-drawer .console-album-copy strong { font-size: 11px; }
+}
+@media (max-width: 800px) {
+  .player-drawer .record-console { column-gap: 12px; grid-template-columns: minmax(100px, 1fr) auto minmax(85px, 1fr) auto; }
+  .player-drawer .console-tools { gap: 1px; }
+  .player-drawer .console-transport { gap: 3px; }
+}
+@media (max-width: 699px) {
+  :root { --player-expanded-height: 206px; --player-handle-height: 46px; }
+  .player-drawer { border-radius: 16px 16px 0 0; }
+  .player-drawer-handle { padding-inline: 16px; gap: 8px; }
+  .drawer-summary { flex-direction: column; align-items: start; gap: 3px; padding-top: 3px; max-width: 55%; }
+  .drawer-summary strong { font-size: 10px; max-width: 100%; }
+  .drawer-summary > span { font-size: 5px; }
+  .drawer-action { font-size: 8px; gap: 5px; }
+  .drawer-grip { width: 28px; top: 7px; }
+  .player-drawer .record-console { padding: 5px 16px 16px; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: 55px 32px 30px 20px; gap: 0 12px; }
+  .player-drawer .console-album { gap: 8px; }
+  .player-drawer .console-art { width: 34px; height: 34px; }
+  .player-drawer .console-album-copy strong { font-size: 12px; }
+  .player-drawer .console-album-copy small { font-size: 5px; }
+  .player-drawer .console-transport { gap: 2px; }
+  .player-drawer .console-transport #record-toggle { width: 38px; height: 38px; }
+  .player-drawer .console-timeline { grid-column: 1 / -1; grid-row: 2; font-size: 8px; }
+  .player-drawer .console-tools { grid-column: 1 / -1; grid-row: 3; justify-self: end; gap: 15px; }
+  .player-drawer .console-volume input { display: block; max-width: 80px; }
+  .player-drawer .console-tools #record-info { display: grid; }
+  .player-drawer .record-console .console-status { grid-row: 4; font-size: 6px; white-space: nowrap; }
+  .tabletop-mode .gallery-stage { bottom: 41px; }
+}
+@media (max-width: 359px) {
+  .player-drawer .record-console { padding-inline: 12px; column-gap: 8px; }
+  .player-drawer .console-art { display: none; }
+  .player-drawer .console-album-copy strong { font-size: 11px; }
+  .player-drawer .console-transport > button { width: 24px; }
+  .player-drawer .console-transport #record-toggle { width: 34px; height: 34px; }
+  .drawer-action { font-size: 7px; }
+}
+@media (max-height: 650px) and (min-width: 700px) {
+  .tabletop-mode .gallery-stage { bottom: 37px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .player-drawer-body, .drawer-chevron { transition: none; }
+}

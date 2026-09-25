@@ -74,3 +74,15 @@ export const projects = [
 ];
 
 export const imagePath = (project) => `/images/${project.image}`;
+
+const genres = ['Ambient', 'Minimal electronica', 'Downtempo', 'Experimental', 'Dream ambient', 'Electronica', 'Dark ambient', 'Minimal', 'Future ambient', 'Soundscape', 'Organic electronic', 'Atmospheric'];
+
+export const albums = projects.map((project, index) => ({
+  ...project,
+  artist: 'ÉTHER · Sound sketches',
+  genre: genres[index],
+  duration: 120 + (index % 4) * 24,
+  bpm: 64 + (index % 5) * 6,
+  seed: index,
+  audioSrc: project.audioSrc ?? null,
+}));
