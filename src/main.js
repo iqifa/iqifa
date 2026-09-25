@@ -4,6 +4,9 @@ import { createRecordPlayer } from './record-player.js';
 import './record-player.css';
 import { createTabletop } from './tabletop.js';
 import './tabletop.css';
+import { createSceneView } from './scene-view.js';
+import { scenes } from './scenes.js';
+import './scenes.css';
 import './player-drawer.css';
 
 const arrow = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.5"/></svg>';
@@ -20,8 +23,7 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     <a class="wordmark" href="#" aria-label="Éther home">ÉTHER<span>®</span></a>
     <span class="brand-descriptor">AN INDEPENDENT LISTENING ROOM<br>GOOD RECORDS. DIFFERENT PERSPECTIVES.</span>
     <nav class="navigation" aria-label="Main navigation">
-      <button class="nav-link active" id="work-nav">Records <sup>12</sup></button>
-      <button class="nav-link" id="about-nav">About</button>
+      <button class="nav-link active" id="work-nav">Records <sup>12</sup></button>      <button class="nav-link" id="about-nav">About</button>
       <button class="contact-nav" id="contact-nav">Let’s talk <span>${arrow}</span></button>
     </nav>
   </header>
@@ -47,6 +49,7 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
                 <img src="${imagePath(p)}" alt="${p.title} 专辑封面" draggable="false" decoding="async" fetchpriority="${i === 4 ? 'high' : 'auto'}" />
                 <span class="artwork-sheen"></span>
                 <span class="sleeve-catalog">ÉTHER RECORDS / ${num(i + 1)}</span>
+                <span class="sleeve-scene"><span>${scenes[p.scene].label}</span><small>${scenes[p.scene].name}</small></span>
                 <span class="artwork-label"><span>${p.title}</span><span class="sleeve-play-symbol">▶</span></span>
               </span>
             </span>
@@ -55,7 +58,7 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
       </div>
     </section>
     <span class="axis-note" aria-hidden="true">IMAGINATION HAS NO FIXED POINT OF VIEW <span>↓</span></span>
-    <div class="gallery-cursor" id="gallery-cursor" aria-hidden="true">PLAY <span>↗</span></div>
+    <div class="gallery-cursor" id="gallery-cursor" aria-hidden="true">PLAY <span>↗</span><em id="cursor-scene"></em></div>
 
     <section class="index-panel" id="index-panel" aria-labelledby="index-title" hidden>
       <div class="index-heading"><div><span class="eyebrow">THE SELECTED COLLECTION / SYNTHESIZED DEMOS</span><h2 id="index-title">Record index<span>(${num(projects.length)})</span></h2></div>
@@ -69,7 +72,7 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         ${projects.map((p, i) => `
           <button class="index-card" data-index="${i}" data-group="${/studies|form/i.test(p.category) ? 'study' : 'art'}" aria-label="播放 ${p.title}" aria-pressed="false">
             <div class="index-image" style="background:${p.color}"><img src="${imagePath(p)}" alt="${p.title}" loading="lazy" /><span class="index-image-arrow">▶</span></div>
-            <div class="index-card-info"><span class="index-card-number">${num(i + 1)}</span><span class="index-card-title">${p.title}<small>${albums[i].genre} · Synth demo</small></span><span class="index-card-year">${p.year}</span></div>
+            <div class="index-card-info"><span class="index-card-number">${num(i + 1)}</span><span class="index-card-title">${p.title}<small>${scenes[p.scene].label} · ${albums[i].genre}</small></span><span class="index-card-year">${p.year}</span></div>
           </button>
         `).join('')}
       </div>
@@ -132,6 +135,7 @@ const gallery = document.querySelector('#gallery');
 const artworkElements = [...document.querySelectorAll('.artwork')];
 const positionMarks = [...document.querySelectorAll('.position-mark')];
 const cursor = document.querySelector('#gallery-cursor');
+const cursorScene = document.querySelector('#cursor-scene');
 const selectedTitle = document.querySelector('#selected-title');
 const selectedCategory = document.querySelector('#selected-category');
 const selectedCount = document.querySelector('#selected-count');
@@ -171,7 +175,13 @@ const tabletop = createTabletop({
     layoutDirty = true;
     resumeAnimation();
   },
+  onEnter: (index) => sceneView.show(index),
+  onExit() {
+    sceneView.hide();
+    if (location.hash === '#blog') history.replaceState(null, '', location.pathname + location.search);
+  },
 });
+const sceneView = createSceneView({ gallery, albums });
 const albumCards = [...document.querySelectorAll('[data-index]')];
 const recordPlayer = createRecordPlayer({
   albums,
@@ -205,7 +215,7 @@ function showSelected(index) {
   selectedIndex = index;
   const p = projects[index];
   selectedTitle.textContent = p.title;
-  selectedCategory.textContent = `${albums[index].genre} · Synth demo`;
+  selectedCategory.textContent = `${scenes[p.scene].label} / ${scenes[p.scene].name} · ${albums[index].genre}`;
   selectedCount.innerHTML = `${num(index + 1)} <span>/ ${num(projects.length)}</span>`;
   selectedWork.setAttribute('aria-label', `${recordPlayer.index === index && recordPlayer.playing ? '暂停' : '播放'} ${p.title}`);
 }
@@ -301,6 +311,7 @@ function setHovered(index) {
   hovered = index;
   if (hovered >= 0) artworkElements[hovered].classList.add('is-hovered');
   cursor.classList.toggle('visible', hovered >= 0);
+  if (hovered >= 0) cursorScene.textContent = `ENTER ${scenes[projects[hovered].scene].label}`;
   cursor.firstChild.textContent = hovered === recordPlayer.index && recordPlayer.playing ? 'PAUSE ' : 'PLAY ';
   cursorDirty = true;
   showSelected(hovered >= 0 ? hovered : activeIndex);
@@ -450,6 +461,17 @@ document.querySelector('#selected-work').addEventListener('click', () => recordP
 document.querySelector('#space-view').addEventListener('click', () => setView('space'));
 document.querySelector('#index-view').addEventListener('click', () => setView('index'));
 document.querySelector('#work-nav').addEventListener('click', () => setView('index'));
+
+function openScene(sceneId) {
+  const current = recordPlayer.index;
+  const index = current >= 0 && projects[current].scene === sceneId ? current : projects.findIndex((p) => p.scene === sceneId);
+  if (index < 0) return;
+  if (view !== 'space') setView('space');
+  setHovered(-1);
+  focusProject(index);
+  tabletop.select(index);
+}
+if (location.hash === '#blog') requestAnimationFrame(() => requestAnimationFrame(() => openScene('blog')));
 document.querySelector('.wordmark').addEventListener('click', (event) => { event.preventDefault(); target = 4; setView('space'); });
 
 function showDialog(id) {
@@ -506,6 +528,7 @@ window.addEventListener('keydown', (event) => {
     event.preventDefault();
     updateProject(modalIndex + direction);
   } else if (!openDialog && view === 'space') {
+    if (tabletopLocked && ['ArrowDown', 'ArrowUp'].includes(event.key)) return;
     event.preventDefault();
     if (tabletopLocked) recordPlayer.changeAlbum(direction);
     else step(direction);

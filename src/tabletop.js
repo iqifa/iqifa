@@ -1,4 +1,4 @@
-export function createTabletop({ gallery, cards, onLockChange }) {
+export function createTabletop({ gallery, cards, onLockChange, onEnter, onExit }) {
   gallery.insertAdjacentHTML('beforebegin', `
     <section class="tabletop-toolbar" aria-label="单专辑聆听" inert>
       <button class="tabletop-back" type="button" aria-label="返回唱片收藏">
@@ -58,6 +58,7 @@ export function createTabletop({ gallery, cards, onLockChange }) {
     collectionUI.forEach((element) => { element.inert = true; });
     isolate();
     positionRecord();
+    onEnter?.(selected);
     if (collectionUI.some((element) => element.contains(document.activeElement))) back.focus({ preventScroll: true });
   }
 
@@ -91,6 +92,7 @@ export function createTabletop({ gallery, cards, onLockChange }) {
     clearTimeout(returnTimer);
     if (phase === 'browse') return;
     phase = 'returning';
+    onExit?.();
     toolbar.inert = true;
     document.body.classList.add('tabletop-returning');
     document.body.classList.remove('tabletop-mode');
