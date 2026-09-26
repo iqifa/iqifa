@@ -71,3 +71,62 @@ $$
 这些别名同样有效：`js` `ts` `py` `sh` `shell` `yml` `md` `c++` `c#` `cs` `html` `xml`。
 
 没写语言，或不在上面的语言，会按纯文本显示，仍然可以复制。
+
+## 唱片和页面的数据
+
+除了博客文章，其余内容都在两个 JSON 文件里。改完保存，开发服务器会自动刷新，唱片数量、索引页、定位条都会跟着变。
+
+- `src/content/records.json`：唱片列表，决定首页有几张唱片、封面、音乐，以及点开后进哪个页面。
+- `src/content/scenes.json`：页面内容，也就是经历、作品、实验室、书单、此刻这些。
+
+### 唱片 `records.json`
+
+数组里一项是一张唱片，顺序就是画廊里的顺序：
+
+```json
+{
+  "id": "memories",
+  "title": "Memories",
+  "scene": "experience",
+  "cover": "memories.webp",
+  "audio": "memories.mp3",
+  "genre": "Dream ambient",
+  "year": "2024",
+  "category": "Art & imagination",
+  "color": "#ba83a5",
+  "description": "点唱机里「封面信息」弹窗显示的介绍。"
+}
+```
+
+- `scene`：点开这张唱片进入的页面，必须是 `scenes.json` 里的一个键，比如 `blog`、`experience`、`works`。写错或留空时，唱片照常播放，但不显示页面标签，也不进页面。
+- `cover`：封面。只写文件名时，从 `public/images/` 找；以 `/` 或 `http` 开头时按原样使用。建议用正方形 webp，边长 800 左右。
+- `audio`：音乐。只写文件名时，从 `public/audio/` 找；也可以写完整网址。写 `null` 或不写，就播放内置的合成试听。浏览器通吃 mp3，m4a、ogg 要看浏览器。
+- `color`：封面加载出来之前、以及唱片中心标签的底色。
+- `id`：唯一即可，不要重复。其余字段都可以省略，会用默认值。
+- 首页一开始对准第 5 张（不足 5 张时对准最后一张）。
+
+### 页面 `scenes.json`
+
+每个键是一个页面，键名就是 `records.json` 里 `scene` 要写的值。可以改、删，也可以新增：
+
+```json
+"works": {
+  "label": "WORKS",
+  "name": "作品",
+  "kind": "works",
+  "title": "Selected<br>works",
+  "intro": "标题下面的一段介绍。",
+  "items": [
+    { "meta": "2026", "title": "ÉTHER", "kind": "Web experience", "summary": "一句话介绍。", "href": "https://..." }
+  ]
+}
+```
+
+- `label` / `name`：唱片封面右上角和页面顶部显示的英文、中文名。
+- `title`：页面大标题，可以用 `<br>` 换行。
+- `kind`：排版方式，三选一：
+  - `posts`：列表。条目字段 `meta`（左侧小字，如日期）、`title`、`summary`、`tags`（数组）。
+  - `timeline`：时间线。在 `posts` 的基础上多一个 `org`（公司或学校），显示在标题后面。
+  - `works`：卡片。条目字段 `meta`（右上角小字）、`title`、`kind`（类型小字）、`summary`、`href`。写了 `href` 卡片才能点。
+- `blog` 页面带 `"source": "firestore"`，文章从 Firestore 读取，不用写 `items`。其他页面不要加 `source`。
+- `items` 里的文字按纯文本显示，不解析 HTML。

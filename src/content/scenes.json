@@ -1,0 +1,196 @@
+{
+  "blog": {
+    "label": "BLOG",
+    "name": "博客",
+    "kind": "blog",
+    "source": "firestore",
+    "title": "Notes from<br>the listening room",
+    "intro": "写给自己，也写给恰好路过的人。关于代码、设计，以及那些值得慢下来想一想的事。"
+  },
+  "experience": {
+    "label": "EXPERIENCE",
+    "name": "经历",
+    "kind": "timeline",
+    "title": "Places I have<br>been listening",
+    "intro": "一路走来的工作与学习。每一段都刻录进人生的唱片中。",
+    "items": [
+      {
+        "meta": "2026.09 — NOW",
+        "title": "腾讯IEG实习-引擎开发",
+        "org": "Tencent IEG",
+        "summary": "前沿技术部分，AI游戏引擎部门实习",
+        "tags": [
+          "Engine",
+          "Graphics",
+          "AI"
+        ]
+      },
+      {
+        "meta": "2024.09 — NOW",
+        "title": "深圳大学-计算机科学与技术-硕士",
+        "org": "Shenzhen University",
+        "summary": "渲染学习，引擎开发，论文撰写，学术成果---AAAI-2026(1),ACMMM-2026(1)",
+        "tags": [
+          "Renderer",
+          "Graphics",
+          "Engine",
+          "Paper"
+        ]
+      },
+      {
+        "meta": "2019.09 — 2023.06",
+        "title": "中北大学-计算机科学与技术-学士",
+        "org": "North University of China",
+        "summary": "动漫创新实验室成员，游戏开发，Gamejam，引擎开发，渲染学习",
+        "tags": [
+          "Graphics",
+          "Engine",
+          "Game"
+        ]
+      }
+    ]
+  },
+  "works": {
+    "label": "WORKS",
+    "name": "作品",
+    "kind": "works",
+    "title": "Selected<br>works",
+    "intro": "一些做完了、或者还在做的东西。每个作品都是一次小小的实验。",
+    "items": [
+      {
+        "meta": "2026.09",
+        "title": "Site",
+        "kind": "Web experience",
+        "summary": "就是你现在所在的这个空间。一个可以播放黑胶的交互画廊。",
+        "href": "#"
+      },
+      {
+        "meta": "2026.Now",
+        "title": "Tsundere Engine",
+        "kind": "Game Engine",
+        "summary": "C++开发的游戏引擎，目前支持OpenGL，vulkan.实现前向渲染，延迟渲染，PT.灯光剔除，阴影，抗锯齿，多线程资源加载，全局光照。",
+        "href": "#"
+      },
+      {
+        "meta": "2026.02",
+        "title": "Gwent Card Game",
+        "kind": "Game Development",
+        "summary": "类昆特牌卡牌游戏",
+        "href": "#"
+      },
+      {
+        "meta": "2026.05",
+        "title": "Grass Rendering",
+        "kind": "Games,Graphics",
+        "summary": "实例化的草地渲染，使用Compute Shader实现，并行计算每棵草的渲染，支持百万级草地渲染，实现视锥剔除，风动交互，物体扰动。",
+        "href": "#"
+      }
+    ]
+  },
+  "lab": {
+    "label": "LAB",
+    "name": "实验室",
+    "kind": "works",
+    "title": "Unfinished<br>experiments",
+    "intro": "不一定有用，但一定有趣。这里放的是原型、草稿和半成品。",
+    "items": [
+      {
+        "meta": "WIP",
+        "title": "神经材质",
+        "kind": "Rendering,Material",
+        "summary": "神经材质，使用神经网络实现材质的渲染，支持多种材质类型，如金属，木材，塑料等。"
+      },
+      {
+        "meta": "WIP",
+        "title": "Visibility buffer",
+        "kind": "Rendering,Buffer",
+        "summary": "可见性缓冲区研究"
+      }
+    ]
+  },
+  "reading": {
+    "label": "READING",
+    "name": "书单",
+    "kind": "posts",
+    "title": "On the<br>shelf",
+    "intro": "最近在读、读过、以及准备重读的书。",
+    "items": [
+      {
+        "meta": "READING",
+        "title": "《Real-Time Rendering 4th Edition》",
+        "summary": "实时渲染领域的经典著作，涵盖了实时渲染的各个方面，包括光线追踪，阴影，抗锯齿，多线程渲染，全局光照等。",
+        "tags": [
+          "Rendering"
+        ]
+      },
+      {
+        "meta": "READING",
+        "title": "《Games104-现代游戏引擎》",
+        "summary": "现代游戏引擎的原理与实现，包括游戏引擎的架构，渲染管线，物理引擎，音频引擎，AI引擎等。",
+        "tags": [
+          "Engine"
+        ]
+      },
+      {
+        "meta": "READ",
+        "title": "《Gpu Gems》",
+        "summary": "GPU编程的经典著作，涵盖了GPU编程的各个方面，包括GPU编程的原理，GPU编程的实现，GPU编程的优化等。",
+        "tags": [
+          "GPU Programming","Graphics"
+        ]
+      },
+      {
+        "meta": "READ",
+        "title": "《Physically Based Rendering 4th Edition》",
+        "summary": "物理基础渲染的经典著作，涵盖了物理基础渲染的各个方面，包括物理基础渲染的原理，物理基础渲染的实现，物理基础渲染的优化等。",
+        "tags": [
+          "Rendering",
+          "Physics"
+        ]
+      },
+      {
+        "meta": "READ",
+        "title": "《游戏引擎架构》",
+        "summary": "游戏引擎架构的经典著作，涵盖了游戏引擎架构的各个方面，包括游戏引擎架构的原理，游戏引擎架构的实现，游戏引擎架构的优化等。",
+        "tags": [
+          "Engine",
+          "Architecture"
+        ]
+      }
+    ]
+  },
+  "now": {
+    "label": "NOW",
+    "name": "此刻",
+    "kind": "posts",
+    "title": "What I am<br>doing now",
+    "intro": "一个不定期更新的近况页。如果你想知道我这阵子在忙什么，就看这里。",
+    "items": [
+      {
+        "meta": "BUILDING",
+        "title": "给 Site 加入更多场景",
+        "summary": "让每个作品都通往一个不同的房间。"
+      },
+      {
+        "meta": "BUILDING",
+        "title": "给 Tsundere Engine 加入更多功能",
+        "summary": "让引擎支持更多功能，如物理引擎，音频引擎，AI引擎等。"
+      },
+      {
+        "meta": "REPRODUCE",
+        "title":"`死亡搁浅-奥克卓扫描-体素地图",
+        "summary": "死亡搁浅中奥克卓扫描和体素地图，使用体素化技术实现。"
+      },
+      {
+        "meta": "REPRODUCE",
+        "title":"Splatoon 的油漆效果",
+        "summary": "喷喷的游戏保留"
+      },
+      {
+        "meta": "REPRODUCE",
+        "title":"真实海洋渲染",
+        "summary": "真实海洋渲染"
+      }
+    ]
+  }
+}

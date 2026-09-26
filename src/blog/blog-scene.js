@@ -51,12 +51,12 @@ function createDialogs() {
   const saveButton = editorDialog.querySelector('[data-save]');
   let editing = { id: null, onSaved: null };
   let dirty = false;
-  let previewFrame;
+  let previewTimer;
   bindCodeCopy(preview);
 
   const updatePreview = () => {
-    cancelAnimationFrame(previewFrame);
-    previewFrame = requestAnimationFrame(() => renderMarkdown(preview, parsePost(source.value).body));
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(() => renderMarkdown(preview, parsePost(source.value).body), 180);
   };
   const syncTitleInput = () => {
     const match = source.value.match(/^title:\s*(.+)$/m);
@@ -66,7 +66,12 @@ function createDialogs() {
   for (const dialog of [loginDialog, editorDialog]) {
     dialog.querySelectorAll('[data-close]').forEach((button) => button.addEventListener('click', () => dialog.close()));
     dialog.addEventListener('keydown', (event) => event.stopPropagation());
+    dialog.addEventListener('close', () => document.body.classList.toggle('dialog-open', !!document.querySelector('dialog[open]')));
   }
+  const open = (dialog) => {
+    dialog.showModal();
+    document.body.classList.add('dialog-open');
+  };
   editorDialog.addEventListener('cancel', (event) => {
     if (dirty && !confirm('有未保存的修改，确定关闭？')) event.preventDefault();
   });
@@ -133,7 +138,7 @@ function createDialogs() {
   return {
     login() {
       loginError.textContent = '';
-      loginDialog.showModal();
+      open(loginDialog);
     },
     edit(post, onSaved) {
       editing = { id: post?.id ?? null, onSaved };
@@ -143,7 +148,7 @@ function createDialogs() {
       dirty = false;
       syncTitleInput();
       updatePreview();
-      editorDialog.showModal();
+      open(editorDialog);
       source.focus({ preventScroll: true });
     },
   };

@@ -3,6 +3,7 @@
 @font-face { font-family: 'Manrope'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/manrope-600.ttf') format('truetype'); }
 @font-face { font-family: 'Manrope'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/manrope-700.ttf') format('truetype'); }
 @font-face { font-family: 'Manrope'; font-style: normal; font-weight: 800; font-display: swap; src: url('/fonts/manrope-800.ttf') format('truetype'); }
+@font-face { font-family: 'Charm'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/charm-400.ttf') format('truetype'); }
 
 :root {
   font-family: 'Manrope', Arial, sans-serif;
@@ -133,10 +134,6 @@ h1 > span:not(.title-period) { font-weight: 500; }
 .index-heading .eyebrow { color: var(--muted); font-size: 8px; }
 .index-heading h2 { font-size: 55px; letter-spacing: -.065em; font-weight: 500; line-height: 1; margin: 13px 0 0; }
 .index-heading h2 > span { font: 12px var(--mono); vertical-align: top; display: inline-block; margin: 6px 0 0 12px; color: var(--muted); letter-spacing: 0; }
-.index-filters { display: flex; align-items: center; gap: 23px; padding-bottom: 5px; }
-.filter { font-size: 10px; color: var(--muted); padding-bottom: 7px; border-bottom: 1px solid transparent; }
-.filter.active { color: var(--ink); border-color: var(--ink); }
-.filter sup { font: 7px var(--mono); margin-left: 3px; }
 .index-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px 23px; }
 .index-card { text-align: left; min-width: 0; }
 .index-image { aspect-ratio: 1.35; overflow: hidden; position: relative; }
@@ -192,15 +189,11 @@ dialog::backdrop { background: #30332745; backdrop-filter: blur(10px); }
 .about-credit a { color: var(--ink); }
 .about-credit p { font-family: 'Manrope', Arial, sans-serif; font-size: 10px; line-height: 1.8; max-width: 590px; margin-bottom: 0; }
 .contact-intro { font-size: 14px; line-height: 1.9; color: #7b826e; }
-.contact-email { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #bfc6ad; margin: 39px 0 25px; padding-bottom: 17px; }
-.contact-email a { display: flex; gap: 30px; align-items: center; font-size: 29px; letter-spacing: -.05em; }
-.contact-email a:hover { color: #788c4a; }
-.contact-email a svg { width: 23px; height: 23px; }
-#copy-email { font: 8px var(--mono); background: #e8ecd9; padding: 10px 13px; border-radius: 3px; }
-#copy-email:hover { background: var(--accent); }
-.contact-note { font: 7px/1.8 var(--mono); color: #949b85; }
-.toast { position: fixed; z-index: 500; bottom: 30px; left: 50%; transform: translate(-50%, 10px); background: var(--ink); color: var(--paper); padding: 13px 22px; border-radius: 4px; font-size: 11px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; }
-.toast.visible { opacity: 1; transform: translate(-50%, 0); }
+.contact-links { display: flex; gap: 22px; margin-top: 36px; }
+.contact-links > * { display: grid; place-items: center; color: #6f7862; transition: color .2s, transform .2s; }
+.contact-links svg { width: 24px; height: 24px; }
+.contact-links a:hover { color: #788c4a; transform: translateY(-2px); }
+.contact-links .is-empty { opacity: .35; cursor: not-allowed; }
 .image-unavailable { opacity: 0 !important; }
 .has-image-error { background: linear-gradient(135deg, var(--art-color, #89917c), #dadbd2); }
 
@@ -237,7 +230,6 @@ dialog::backdrop { background: #30332745; backdrop-filter: blur(10px); }
   .brand-descriptor { display: none; }
   .footer-manifesto { display: none; }
   .view-caption { font-size: 6px; }
-  .index-filters { gap: 14px; }
   .index-grid { grid-template-columns: repeat(2, 1fr); }
   .project-dialog { width: calc(100vw - 50px); }
   .project-image-wrap { min-height: 540px; }
@@ -303,8 +295,6 @@ dialog::backdrop { background: #30332745; backdrop-filter: blur(10px); }
   .index-heading .eyebrow { font-size: 6px; }
   .index-heading h2 { font-size: 40px; }
   .index-heading h2 > span { font-size: 9px; margin-top: 4px; }
-  .index-filters { margin-top: 25px; gap: 20px; }
-  .filter { font-size: 8px; }
   .index-grid { gap: 24px 13px; }
   .index-image { aspect-ratio: .85; }
   .index-card-info { gap: 6px; padding-top: 9px; }
@@ -339,11 +329,8 @@ dialog::backdrop { background: #30332745; backdrop-filter: blur(10px); }
   .about-credit { font-size: 7px; }
   .about-credit p { font-size: 9px; }
   .contact-intro { font-size: 11px; }
-  .contact-email { margin: 29px 0 20px; gap: 10px; }
-  .contact-email a { font-size: 22px; gap: 13px; }
-  .contact-email a svg { width: 15px; height: 15px; }
-  #copy-email { font-size: 6px; padding: 8px; }
-  .contact-note { font-size: 6px; }
+  .contact-links { margin-top: 26px; gap: 18px; }
+  .contact-links svg { width: 20px; height: 20px; }
 }
 @media (max-height: 650px) and (min-width: 700px) {
   .header { height: 80px; }
@@ -367,7 +354,6 @@ dialog::backdrop { background: #30332745; backdrop-filter: blur(10px); }
   .navigation { gap: 18px; }
   .contact-nav { font-size: 0; gap: 0; }
   .nav-link { white-space: nowrap; }
-  .contact-email a { font-size: 18px; gap: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }

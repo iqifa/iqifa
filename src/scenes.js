@@ -1,71 +1,11 @@
-export const scenes = {
-  blog: {
-    label: 'BLOG',
-    name: '博客',
-    kind: 'blog',
-    source: 'firestore',
-    title: 'Notes from<br>the listening room',
-    intro: '写给自己，也写给恰好路过的人。关于代码、设计，以及那些值得慢下来想一想的事。',
-  },
-  experience: {
-    label: 'EXPERIENCE',
-    name: '经历',
-    kind: 'timeline',
-    title: 'Places I have<br>been listening',
-    intro: '一路走来的工作与学习。每一段都像一张唱片的 A 面：留下了一些旋律，也留下了下一首的伏笔。',
-    items: [
-      { meta: '2024 — NOW', title: '软件工程师', org: 'Independent Studio', summary: '负责 Web 前端与交互体验，搭建组件体系，推动性能与可访问性优化。', tags: ['Frontend', 'UX'] },
-      { meta: '2022 — 2024', title: '前端开发', org: 'Product Team', summary: '参与多个 B 端产品的从 0 到 1，主导数据可视化与编辑器模块。', tags: ['Vue', 'Canvas'] },
-      { meta: '2018 — 2022', title: '计算机科学与技术', org: 'University', summary: '本科。课余时间做独立游戏、写博客，也在社团里做音乐。', tags: ['B.Eng.'] },
-    ],
-  },
-  works: {
-    label: 'WORKS',
-    name: '作品',
-    kind: 'works',
-    title: 'Selected<br>works',
-    intro: '一些做完了、或者还在做的东西。每个作品都是一次小小的实验。',
-    items: [
-      { meta: '2026', title: 'ÉTHER', kind: 'Web experience', summary: '就是你现在所在的这个空间。一个可以播放黑胶的交互画廊。', href: '#' },
-      { meta: '2025', title: 'Personal Blog', kind: 'Blog system', summary: '带评论、登录与国内代理的个人博客，原生 JS 模块化实现。', href: '#' },
-      { meta: '2025', title: 'Markdown Studio', kind: 'Editor', summary: '双栏实时预览的 Markdown 编辑器，支持 KaTeX 与代码高亮。', href: '#' },
-      { meta: '2024', title: 'Tiny Synth', kind: 'Audio tool', summary: '在浏览器里运行的迷你合成器，所有声音都实时生成。', href: '#' },
-    ],
-  },
-  lab: {
-    label: 'LAB',
-    name: '实验室',
-    kind: 'works',
-    title: 'Unfinished<br>experiments',
-    intro: '不一定有用，但一定有趣。这里放的是原型、草稿和半成品。',
-    items: [
-      { meta: 'WIP', title: 'Starfield', kind: 'Canvas', summary: '会被鼠标吸引的星空背景，偶尔有流星划过。' },
-      { meta: 'WIP', title: 'Paper Physics', kind: 'Interaction', summary: '用弹簧模型模拟纸张被拖动时的褶皱与回弹。' },
-      { meta: 'PROTO', title: 'Type Weather', kind: 'Typography', summary: '字体粗细随实时天气变化的排版实验。' },
-    ],
-  },
-  reading: {
-    label: 'READING',
-    name: '书单',
-    kind: 'posts',
-    title: 'On the<br>shelf',
-    intro: '最近在读、读过、以及准备重读的书。',
-    items: [
-      { meta: 'READING', title: '《设计中的设计》', summary: '原研哉。关于“空”与“白”，以及设计如何让人重新看见日常。', tags: ['Design'] },
-      { meta: 'READ', title: '《代码大全》', summary: '厚，但每次翻开都能找到一句正好需要的话。', tags: ['Engineering'] },
-      { meta: 'READ', title: '《噪音：人类判断的缺陷》', summary: '读完之后，对“直觉”多了一分警惕。', tags: ['Thinking'] },
-    ],
-  },
-  now: {
-    label: 'NOW',
-    name: '此刻',
-    kind: 'posts',
-    title: 'What I am<br>doing now',
-    intro: '一个不定期更新的近况页。如果你想知道我这阵子在忙什么，就看这里。',
-    items: [
-      { meta: 'BUILDING', title: '给 ÉTHER 加入更多场景', summary: '让每一张唱片都通往一个不同的房间。' },
-      { meta: 'LEARNING', title: 'WebGL 与着色器', summary: '想把星空背景搬到 GPU 上。' },
-      { meta: 'LISTENING', title: 'Ambient / Downtempo', summary: '写代码时的背景音乐，越安静越好。' },
-    ],
-  },
-};
+import data from './content/scenes.json';
+
+export const scenes = Object.fromEntries(Object.entries(data).map(([id, scene]) => [id, {
+  label: id.toUpperCase(),
+  name: '',
+  kind: 'posts',
+  title: id,
+  intro: '',
+  items: [],
+  ...scene,
+}]));

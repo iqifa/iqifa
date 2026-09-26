@@ -1,16 +1,21 @@
 import './style.css';
-import { projects, albums, imagePath } from './data.js';
+import { projects, albums, imagePath, sceneOf, defaultIndex } from './data.js';
 import { createRecordPlayer } from './record-player.js';
 import './record-player.css';
 import { createTabletop } from './tabletop.js';
 import './tabletop.css';
 import { createSceneView } from './scene-view.js';
-import { scenes } from './scenes.js';
 import './scenes.css';
 import './player-drawer.css';
+import contact from './content/contact.json';
 
 const arrow = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.5"/></svg>';
 const chevron = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="1.5"/></svg>';
+const contactLinks = [
+  { label: 'GitHub', href: contact.github, icon: '<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>' },
+  { label: 'Twitter', href: contact.x, icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23.953 4.57a10 10 0 0 1-2.825.775 4.958 4.958 0 0 0 2.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 0 0-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 0 0-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 0 1-2.228-.616v.06a4.923 4.923 0 0 0 3.946 4.827 4.996 4.996 0 0 1-2.212.085 4.936 4.936 0 0 0 4.604 3.417 9.867 9.867 0 0 1-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 0 0 7.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0 0 24 4.59z"/></svg>' },
+  { label: 'Email', href: contact.email && `mailto:${contact.email}`, icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 4.5h18A1.5 1.5 0 0 1 22.5 6v.35L12 12.9 1.5 6.35V6A1.5 1.5 0 0 1 3 4.5Zm-1.5 3.62L12 14.67l10.5-6.55V18A1.5 1.5 0 0 1 21 19.5H3A1.5 1.5 0 0 1 1.5 18V8.12Z"/></svg>' },
+];
 const cross = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" stroke="currentColor" stroke-width="1.5"/></svg>';
 const spaceIcon = '<svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="m2 7 4 1v8l-4-1V7Zm5-4 4 1v8l-4-1V3Zm5-2 4 1v8l-4-1V1Z" stroke="currentColor"/></svg>';
 const gridIcon = '<svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2 2h5v5H2zM11 2h5v5h-5zM2 11h5v5H2zM11 11h5v5h-5z" stroke="currentColor"/></svg>';
@@ -20,10 +25,10 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
  document.querySelector('#app').innerHTML = `
   <header class="header">
-    <a class="wordmark" href="#" aria-label="Éther home">ÉTHER<span>®</span></a>
+    <a class="wordmark" href="#" aria-label="PI home">PI<span>®</span></a>
     <span class="brand-descriptor">AN INDEPENDENT LISTENING ROOM<br>GOOD RECORDS. DIFFERENT PERSPECTIVES.</span>
     <nav class="navigation" aria-label="Main navigation">
-      <button class="nav-link active" id="work-nav">Records <sup>12</sup></button>      <button class="nav-link" id="about-nav">About</button>
+      <button class="nav-link active" id="work-nav">Records <sup>${projects.length}</sup></button>      <button class="nav-link" id="about-nav">About</button>
       <button class="contact-nav" id="contact-nav">Let’s talk <span>${arrow}</span></button>
     </nav>
   </header>
@@ -43,13 +48,13 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
           <button class="artwork" data-index="${i}" aria-label="播放 ${p.title}" aria-pressed="false" style="--art-color:${p.color}">
             <span class="artwork-surface">
               <span class="vinyl-slot" aria-hidden="true">
-                <span class="vinyl-disc"><span class="vinyl-label"><span>ÉTHER / ${num(i + 1)}</span><span class="vinyl-hole"></span><span>SIDE A · 33⅓</span></span></span>
+                <span class="vinyl-disc"><span class="vinyl-label"><span>PI / ${num(i + 1)}</span><span class="vinyl-hole"></span><span>SIDE A · 33⅓</span></span></span>
               </span>
               <span class="album-sleeve">
-                <img src="${imagePath(p)}" alt="${p.title} 专辑封面" draggable="false" decoding="async" fetchpriority="${i === 4 ? 'high' : 'auto'}" />
+                <img src="${imagePath(p)}" alt="${p.title} 专辑封面" draggable="false" decoding="async" fetchpriority="${i === defaultIndex ? 'high' : 'auto'}" />
                 <span class="artwork-sheen"></span>
-                <span class="sleeve-catalog">ÉTHER RECORDS / ${num(i + 1)}</span>
-                <span class="sleeve-scene"><span>${scenes[p.scene].label}</span><small>${scenes[p.scene].name}</small></span>
+                <span class="sleeve-catalog">PI RECORDS / ${num(i + 1)}</span>
+                ${sceneOf(p) ? `<span class="sleeve-scene"><span>${sceneOf(p).label}</span><small>${sceneOf(p).name}</small></span>` : ''}
                 <span class="artwork-label"><span>${p.title}</span><span class="sleeve-play-symbol">▶</span></span>
               </span>
             </span>
@@ -61,18 +66,12 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     <div class="gallery-cursor" id="gallery-cursor" aria-hidden="true">PLAY <span>↗</span><em id="cursor-scene"></em></div>
 
     <section class="index-panel" id="index-panel" aria-labelledby="index-title" hidden>
-      <div class="index-heading"><div><span class="eyebrow">THE SELECTED COLLECTION / SYNTHESIZED DEMOS</span><h2 id="index-title">Record index<span>(${num(projects.length)})</span></h2></div>
-        <div class="index-filters" role="group" aria-label="Filter records by cover art">
-          <button class="filter active" data-filter="all" aria-pressed="true">All records <sup>12</sup></button>
-          <button class="filter" data-filter="art" aria-pressed="false">Art & imagination</button>
-          <button class="filter" data-filter="study" aria-pressed="false">Studies & form</button>
-        </div>
-      </div>
+      <div class="index-heading"><div><span class="eyebrow">THE SELECTED COLLECTION</span><h2 id="index-title">Record index<span>(${num(projects.length)})</span></h2></div></div>
       <div class="index-grid" id="index-grid">
         ${projects.map((p, i) => `
-          <button class="index-card" data-index="${i}" data-group="${/studies|form/i.test(p.category) ? 'study' : 'art'}" aria-label="播放 ${p.title}" aria-pressed="false">
+          <button class="index-card" data-index="${i}" aria-label="播放 ${p.title}" aria-pressed="false">
             <div class="index-image" style="background:${p.color}"><img src="${imagePath(p)}" alt="${p.title}" loading="lazy" /><span class="index-image-arrow">▶</span></div>
-            <div class="index-card-info"><span class="index-card-number">${num(i + 1)}</span><span class="index-card-title">${p.title}<small>${scenes[p.scene].label} · ${albums[i].genre}</small></span><span class="index-card-year">${p.year}</span></div>
+            <div class="index-card-info"><span class="index-card-number">${num(i + 1)}</span><span class="index-card-title">${p.title}<small>${sceneOf(p) ? `${sceneOf(p).label} · ` : ''}${albums[i].genre}</small></span><span class="index-card-year">${p.year}</span></div>
           </button>
         `).join('')}
       </div>
@@ -94,19 +93,18 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         <span class="view-caption">SAME WORLD. ANOTHER PERSPECTIVE.</span>
       </div>
       <div class="explore-controls">
-        <div class="project-steppers"><button id="previous-project" aria-label="Previous project">${chevron}</button><div class="position-track" id="position-track">${projects.map((_, i) => `<button class="position-mark ${i === 4 ? 'active' : ''}" data-position="${i}" aria-label="Focus project ${i + 1}"></button>`).join('')}</div><button id="next-project" aria-label="Next project">${chevron}</button></div>
+        <div class="project-steppers"><button id="previous-project" aria-label="Previous project">${chevron}</button><div class="position-track" id="position-track">${projects.map((_, i) => `<button class="position-mark ${i === defaultIndex ? 'active' : ''}" data-position="${i}" aria-label="Focus project ${i + 1}"></button>`).join('')}</div><button id="next-project" aria-label="Next project">${chevron}</button></div>
         <span class="scroll-hint"><span class="scroll-icon"></span><span class="desktop-hint">SCROLL OR DRAG TO EXPLORE</span><span class="mobile-hint">SWIPE TO EXPLORE</span></span>
       </div>
     </div>
-    <div class="footer-meta"><span>© ÉTHER STUDIO 2026</span><span class="footer-manifesto">AN ONGOING EXPLORATION OF WHAT’S NEXT.</span><span class="clock-label"><span class="status-dot"></span> LOCAL TIME <time id="local-clock"></time></span></div>
+    <div class="footer-meta"><span>© PI 2026</span><span class="footer-manifesto">AN ONGOING EXPLORATION OF WHAT’S NEXT.</span><span class="clock-label"><span class="status-dot"></span> LOCAL TIME <time id="local-clock"></time></span></div>
   </footer>
 
   <dialog class="project-dialog" id="project-dialog" aria-labelledby="project-title">
     <button class="dialog-close" data-close aria-label="Close project">${cross}</button>
-    <div class="project-image-wrap"><img id="project-image" src="${imagePath(projects[4])}" alt="" /><span class="image-credit">IMAGE STUDY / UNVEIL®</span></div>
+    <div class="project-image-wrap"><img id="project-image" src="${imagePath(projects[defaultIndex])}" alt="" /><span class="image-credit">ALBUM ARTWORK</span></div>
     <div class="project-content"><span class="eyebrow" id="project-number"></span><h2 id="project-title"></h2><span class="project-category" id="project-category"></span><p class="project-description" id="project-description"></p>
-      <div class="project-details"><div><span>EXPLORATION</span><span id="project-discipline"></span></div><div><span>YEAR</span><span id="project-year"></span></div></div>
-      <a class="source-link" href="https://unveil.fr/" target="_blank" rel="noopener noreferrer">Discover the original artwork ${arrow}</a>
+      <div class="project-details"><div><span>ARTIST</span><span id="project-discipline"></span></div><div><span>YEAR</span><span id="project-year"></span></div></div>
       <div class="dialog-project-navigation"><button id="modal-previous">${chevron} Previous</button><span id="modal-count"></span><button id="modal-next">Next ${chevron}</button></div>
     </div>
   </dialog>
@@ -115,20 +113,20 @@ const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     <button class="dialog-close" data-close aria-label="Close about">${cross}</button>
     <span class="eyebrow"><span class="status-dot"></span> A LITTLE ABOUT THIS SPACE</span>
     <h2 id="about-title">Curiosity,<br>without limits<span class="green-period">.</span></h2>
-    <div class="about-columns"><p>Good records deserve a little room to breathe.</p><div><p>ÉTHER is a concept listening room. Browse a collection, slide a record from its sleeve, and find your own frequency.</p><p>Each demo pairs visual art with a small synthesized sound sketch. Pause, rewind, or let the next record find you.</p></div></div>
-    <div class="disciplines"><span>Ambient</span><span>Electronica</span><span>Soundscapes</span><span>Slow listening</span></div>
-    <div class="about-credit">AN INTERFACE STUDY INSPIRED BY <a href="https://unveil.fr/" target="_blank" rel="noopener noreferrer">UNVEIL® ↗</a><p>ÉTHER is a fictional demonstration brand, not affiliated with UNVEIL. Cover artwork belongs to its respective creators and is used for visual reference only. Audio is synthesized demo music, not recordings associated with the original artwork.</p></div>
+    <div class="about-columns"><p>Good records deserve a little room to breathe.</p><div><p>PI is a personal listening room. Browse a collection, slide a record from its sleeve, and find your own frequency.</p><p>Each record pairs a song with its cover art. Pause, rewind, or let the next record find you.</p></div></div>
+    <div class="disciplines"><span>J-rock</span><span>Game soundtracks</span><span>Anime songs</span><span>Slow listening</span></div>
+    <div class="about-credit">AN INTERFACE STUDY INSPIRED BY <a href="https://unveil.fr/" target="_blank" rel="noopener noreferrer">UNVEIL® ↗</a><p>PI is not affiliated with UNVEIL. Music and cover artwork belong to their respective artists and labels, and are shared here for personal, non-commercial listening only.</p></div>
   </dialog>
 
   <dialog class="contact-dialog text-dialog" id="contact-dialog" aria-labelledby="contact-title">
     <button class="dialog-close" data-close aria-label="Close contact">${cross}</button>
     <span class="eyebrow"><span class="status-dot"></span> GOOD THINGS START WITH A CONVERSATION</span>
     <h2 id="contact-title">Have something<br>in mind<span class="green-period">?</span></h2>
-    <p class="contact-intro">A bold idea, an unexpected collaboration,<br>or just a hello. We’d love to hear it.</p>
-    <div class="contact-email"><a href="mailto:hello@ether.studio">hello@ether.studio ${arrow}</a><button id="copy-email" aria-label="Copy email address">COPY</button></div>
-    <span class="contact-note">DEMO CONTACT — REPLACE WITH YOUR STUDIO’S EMAIL BEFORE PUBLISHING.</span>
+    <p class="contact-intro">A bold idea, an unexpected collaboration,<br>or just a hello. I’d love to hear it.</p>
+    <div class="contact-links">${contactLinks.map(({ label, href, icon }) => href
+      ? `<a href="${href}" ${href.startsWith('mailto:') ? '' : 'target="_blank" rel="noopener noreferrer"'} aria-label="${label}" title="${label}">${icon}</a>`
+      : `<span class="is-empty" aria-label="${label}（未填写）" title="${label}（未填写）">${icon}</span>`).join('')}</div>
   </dialog>
-  <div class="toast" id="toast" role="status"></div>
 `;
 
 const gallery = document.querySelector('#gallery');
@@ -141,11 +139,11 @@ const selectedCategory = document.querySelector('#selected-category');
 const selectedCount = document.querySelector('#selected-count');
 const selectedWork = document.querySelector('#selected-work');
 const artworkStates = artworkElements.map((element) => ({ element, width: 0, styles: {} }));
-let position = 4;
-let target = 4;
-let activeIndex = 4;
+let position = defaultIndex;
+let target = defaultIndex;
+let activeIndex = defaultIndex;
 let selectedIndex = -1;
-let modalIndex = 4;
+let modalIndex = defaultIndex;
 let hovered = -1;
 let view = 'space';
 const pointer = { x: 0, y: 0 };
@@ -173,6 +171,7 @@ const tabletop = createTabletop({
       setHovered(-1);
     }
     layoutDirty = true;
+    syncWheel();
     resumeAnimation();
   },
   onEnter: (index) => sceneView.show(index),
@@ -215,7 +214,7 @@ function showSelected(index) {
   selectedIndex = index;
   const p = projects[index];
   selectedTitle.textContent = p.title;
-  selectedCategory.textContent = `${scenes[p.scene].label} / ${scenes[p.scene].name} · ${albums[index].genre}`;
+  selectedCategory.textContent = `${sceneOf(p) ? `${sceneOf(p).label} / ${sceneOf(p).name} · ` : ''}${albums[index].genre}`;
   selectedCount.innerHTML = `${num(index + 1)} <span>/ ${num(projects.length)}</span>`;
   selectedWork.setAttribute('aria-label', `${recordPlayer.index === index && recordPlayer.playing ? '暂停' : '播放'} ${p.title}`);
 }
@@ -311,7 +310,7 @@ function setHovered(index) {
   hovered = index;
   if (hovered >= 0) artworkElements[hovered].classList.add('is-hovered');
   cursor.classList.toggle('visible', hovered >= 0);
-  if (hovered >= 0) cursorScene.textContent = `ENTER ${scenes[projects[hovered].scene].label}`;
+  if (hovered >= 0) cursorScene.textContent = sceneOf(projects[hovered]) ? `ENTER ${sceneOf(projects[hovered]).label}` : '';
   cursor.firstChild.textContent = hovered === recordPlayer.index && recordPlayer.playing ? 'PAUSE ' : 'PLAY ';
   cursorDirty = true;
   showSelected(hovered >= 0 ? hovered : activeIndex);
@@ -347,6 +346,7 @@ function setView(nextView) {
   }
   setHovered(-1);
   showSelected(activeIndex);
+  syncWheel();
   resumeAnimation();
 }
 
@@ -418,7 +418,15 @@ function finishDrag() {
 window.addEventListener('pointerup', finishDrag);
 window.addEventListener('pointercancel', finishDrag);
 window.addEventListener('blur', finishDrag);
-window.addEventListener('wheel', (event) => {
+let wheelBound = false;
+function syncWheel() {
+  const wanted = view === 'space' && !tabletopLocked;
+  if (wanted === wheelBound) return;
+  wheelBound = wanted;
+  if (wanted) window.addEventListener('wheel', onWheel, { passive: false });
+  else window.removeEventListener('wheel', onWheel, { passive: false });
+}
+function onWheel(event) {
   if (view !== 'space' || dialogOpen || event.ctrlKey || drag || tabletopLocked) return;
   event.preventDefault();
   setHovered(-1);
@@ -431,7 +439,8 @@ window.addEventListener('wheel', (event) => {
     resumeAnimation();
   }, 180);
   resumeAnimation();
-}, { passive: false });
+}
+syncWheel();
 
 artworkElements.forEach((element, index) => {
   element.addEventListener('pointerenter', (event) => {
@@ -472,7 +481,7 @@ function openScene(sceneId) {
   tabletop.select(index);
 }
 if (location.hash === '#blog') requestAnimationFrame(() => requestAnimationFrame(() => openScene('blog')));
-document.querySelector('.wordmark').addEventListener('click', (event) => { event.preventDefault(); target = 4; setView('space'); });
+document.querySelector('.wordmark').addEventListener('click', (event) => { event.preventDefault(); target = defaultIndex; setView('space'); });
 
 function showDialog(id) {
   const dialog = document.querySelector(id);
@@ -487,9 +496,9 @@ function updateProject(index) {
   const p = projects[modalIndex];
   const image = document.querySelector('#project-image');
   image.src = imagePath(p);
-  image.alt = `${p.title} — artwork by UNVEIL`;
+  image.alt = `${p.title} — ${p.category} 专辑封面`;
   image.parentElement.style.background = p.color;
-  document.querySelector('#project-number').textContent = `SELECTED EXPLORATION / ${num(modalIndex + 1)}`;
+  document.querySelector('#project-number').textContent = `SELECTED RECORD / ${num(modalIndex + 1)}`;
   document.querySelector('#project-title').textContent = p.title;
   document.querySelector('#project-category').textContent = `${p.category} — ${p.year}`;
   document.querySelector('#project-description').textContent = p.description;
@@ -532,48 +541,6 @@ window.addEventListener('keydown', (event) => {
     event.preventDefault();
     if (tabletopLocked) recordPlayer.changeAlbum(direction);
     else step(direction);
-  }
-});
-
-document.querySelectorAll('.filter').forEach((button) => {
-  button.addEventListener('click', () => {
-    document.querySelectorAll('.filter').forEach((filter) => {
-      const active = filter === button;
-      filter.classList.toggle('active', active);
-      filter.setAttribute('aria-pressed', String(active));
-    });
-    let count = 0;
-    document.querySelectorAll('.index-card').forEach((card) => {
-      card.hidden = button.dataset.filter !== 'all' && card.dataset.group !== button.dataset.filter;
-      if (!card.hidden) count++;
-    });
-    document.querySelector('#index-title span').textContent = `(${num(count)})`;
-  });
-});
-
-let toastTimer;
-function toast(message) {
-  const element = document.querySelector('#toast');
-  element.textContent = message;
-  element.classList.add('visible');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => element.classList.remove('visible'), 2600);
-}
-document.querySelector('#copy-email').addEventListener('click', async () => {
-  const button = document.querySelector('#copy-email');
-  try {
-    await navigator.clipboard.writeText('hello@ether.studio');
-    button.textContent = 'COPIED';
-    toast('Email address copied');
-    setTimeout(() => { button.textContent = 'COPY'; }, 2200);
-  } catch {
-    button.textContent = 'SELECT EMAIL';
-    const selection = window.getSelection();
-    const range = document.createRange();
-    range.selectNodeContents(document.querySelector('.contact-email a'));
-    selection.removeAllRanges();
-    selection.addRange(range);
-    toast('Select and copy the email address');
   }
 });
 

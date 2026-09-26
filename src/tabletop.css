@@ -1,3 +1,5 @@
+:root { transition: background-color .8s; }
+:root:has(body.tabletop-mode) { background-color: #efeee7; }
 .gallery-stage { transition: opacity 1.25s, background-color .8s; }
 .tabletop-mode .artwork .artwork-surface, .tabletop-returning .artwork .artwork-surface { transition: transform .85s cubic-bezier(.22,.75,.2,1); }
 .tabletop-mode .gallery-stage { bottom: calc(46px + var(--console-height)); background-color: #efeee7; cursor: default; }
@@ -9,7 +11,9 @@
 .tabletop-mode .artwork.is-on-table::before { transform: rotateZ(-8deg); }
 .tabletop-mode .artwork.is-on-table .artwork-surface { transform: translate3d(0, 0, 0) perspective(1400px) rotateY(0deg) skewY(0deg) rotateZ(-8deg); }
 .tabletop-mode .artwork.is-on-table .album-sleeve { box-shadow: 1px 2px 2px #29282025, 5px 9px 12px #29282026, 16px 27px 35px #29282016; }
-.tabletop-mode .artwork.is-on-table .vinyl-slot { transform: translate3d(67%, 0, 0); transition: none; filter: drop-shadow(3px 9px 7px #25282030); }
+.tabletop-mode .artwork.is-on-table .vinyl-slot { transform: translate3d(67%, 0, 0); transition: none; }
+.tabletop-mode .artwork.is-on-table .vinyl-slot::before { content: ''; position: absolute; inset: 0; border-radius: 50%; box-shadow: 3px 9px 14px #25282030; }
+.tabletop-mode .artwork.is-on-table.is-playing .vinyl-disc { will-change: transform; }
 .tabletop-mode .artwork.is-on-table .artwork-label { opacity: 1; }
 .tabletop-mode .artwork.is-on-table .sleeve-play-symbol { opacity: 0; }
 .tabletop-mode .artwork.is-on-table:hover .sleeve-play-symbol, .tabletop-mode .artwork.is-on-table:focus-visible .sleeve-play-symbol { opacity: 1; }

@@ -1,5 +1,5 @@
 import { AudioEngine } from './audio-engine.js';
-import { imagePath } from './data.js';
+import { imagePath, defaultIndex } from './data.js';
 
 const icon = (path) => `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">${path}</svg>`;
 const playIcon = icon('<path d="m9 5 11 7-11 7V5Z" fill="currentColor"/>');
@@ -24,7 +24,7 @@ export function createRecordPlayer({ albums, onChange, onSelect, onDetails, getD
         <div class="player-drawer-clip">
     <section class="record-console console-empty" aria-label="黑胶唱片播放器">
       <button class="console-album" id="record-locate" aria-label="定位当前唱片" disabled>
-        <span class="console-art"><img id="record-cover" src="${imagePath(albums[4])}" alt="" /></span>
+        <span class="console-art"><img id="record-cover" src="${imagePath(albums[defaultIndex])}" alt="" /></span>
         <span class="console-album-copy"><strong id="record-title">Nothing on the turntable</strong><small><span class="console-dot"></span><span id="record-subtitle">SELECT A RECORD TO PLAY</span></small></span>
       </button>
       <div class="console-transport">

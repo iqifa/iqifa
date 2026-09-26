@@ -3,7 +3,7 @@
 .scene-inner { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: minmax(250px, .85fr) minmax(0, 1.4fr); gap: 40px 70px; align-items: start; }
 .scene-heading { position: sticky; top: 0; animation: scene-rise .8s .35s cubic-bezier(.22,.75,.2,1) both; }
 .scene-heading .eyebrow { font-size: 8px; color: var(--muted); }
-.scene-heading h2 { margin: 24px 0 22px; font-size: clamp(38px, 4.6vw, 64px); letter-spacing: -.07em; font-weight: 500; line-height: 1.02; }
+.scene-heading h2 { margin: 24px 0 22px; font-family: 'Charm', 'Kaiti SC', 'KaiTi', cursive; font-size: clamp(42px, 5vw, 70px); letter-spacing: 0; font-weight: 400; line-height: 1.12; }
 .scene-heading p { margin: 0; max-width: 340px; font-size: 12px; line-height: 1.85; color: #5d6255; }
 .scene-list { display: grid; }
 .scene-entry, .scene-work { animation: scene-rise .75s calc(.45s + var(--i) * .07s) cubic-bezier(.22,.75,.2,1) both; }
@@ -25,7 +25,7 @@
 .scene-timeline .scene-entry:last-child { border: 0; }
 
 .scene-works .scene-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.scene-work { position: relative; display: flex; flex-direction: column; min-height: 180px; padding: 18px 20px 20px; border: 1px solid #d9dccd; border-radius: 4px; background: #f7f7f2b8; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color .25s, background .25s, transform .35s cubic-bezier(.22,.75,.2,1); }
+.scene-work { position: relative; display: flex; flex-direction: column; min-height: 180px; padding: 18px 20px 20px; border: 1px solid #d9dccd; border-radius: 4px; background: #f7f7f2e0; transition: border-color .25s, background .25s, transform .35s cubic-bezier(.22,.75,.2,1); }
 a.scene-work:hover { border-color: var(--ink); background: #f9faf5; transform: translateY(-3px); }
 .scene-work-head { display: flex; justify-content: space-between; font: 8px var(--mono); letter-spacing: .06em; color: #8c917f; margin-bottom: auto; padding-bottom: 32px; }
 .scene-work strong { font-size: 19px; font-weight: 500; letter-spacing: -.04em; }
@@ -45,7 +45,7 @@ a.scene-work:hover .scene-work-arrow { background: var(--accent); border-color: 
 }
 @media (max-width: 699px) {
   .scene-panel { top: 132px; bottom: calc(41px + var(--console-height)); padding-top: 12px; }
-  .scene-heading h2 { font-size: 36px; margin: 16px 0 14px; }
+  .scene-heading h2 { font-size: 40px; margin: 16px 0 14px; }
   .scene-heading .eyebrow { font-size: 6px; }
   .scene-heading p { font-size: 11px; }
   .scene-entry { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 18px 0; }
